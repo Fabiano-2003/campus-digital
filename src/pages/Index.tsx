@@ -1,11 +1,28 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { Navbar } from "@/components/layout/Navbar";
+import { Sidebar } from "@/components/layout/Sidebar";
+import { Footer } from "@/components/layout/Footer";
+import { HeroSection } from "@/components/home/HeroSection";
+import { FeaturedContent } from "@/components/home/FeaturedContent";
 
 const Index = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  const closeSidebar = () => setSidebarOpen(false);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="min-h-screen bg-background">
+      <Navbar onMenuClick={toggleSidebar} />
+      
+      <div className="flex">
+        <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
+        
+        <main className="flex-1 min-h-screen">
+          <HeroSection />
+          <FeaturedContent />
+          <Footer />
+        </main>
       </div>
     </div>
   );
