@@ -54,6 +54,12 @@ const Auth = () => {
               description: "Email ou senha incorretos. Verifique seus dados.",
               variant: "destructive",
             });
+          } else if (error.message.includes("Email not confirmed")) {
+            toast({
+              title: "Email não confirmado",
+              description: "Verifique sua caixa de email e clique no link de confirmação. Ou desative a confirmação de email nas configurações do Supabase para testes.",
+              variant: "destructive",
+            });
           } else {
             toast({
               title: "Erro de login",
@@ -101,9 +107,12 @@ const Auth = () => {
           }
         } else {
           toast({
-            title: "Conta criada!",
-            description: "Verifique seu email para confirmar a conta.",
+            title: "Conta criada com sucesso!",
+            description: "Agora pode fazer login com suas credenciais.",
+            variant: "default",
           });
+          setIsLogin(true); // Muda para o modo login
+          setFormData(prev => ({ ...prev, password: "" })); // Limpa a senha por segurança
         }
       }
     } catch (error) {
