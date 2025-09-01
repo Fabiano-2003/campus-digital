@@ -76,35 +76,50 @@ export type Database = {
       }
       profiles: {
         Row: {
+          academic_level: string | null
           avatar_url: string | null
           bio: string | null
+          course: string | null
           created_at: string | null
           full_name: string | null
           id: string
+          institution: string | null
           location: string | null
           phone: string | null
+          province: string | null
+          student_id: string | null
           updated_at: string | null
           website: string | null
         }
         Insert: {
+          academic_level?: string | null
           avatar_url?: string | null
           bio?: string | null
+          course?: string | null
           created_at?: string | null
           full_name?: string | null
           id: string
+          institution?: string | null
           location?: string | null
           phone?: string | null
+          province?: string | null
+          student_id?: string | null
           updated_at?: string | null
           website?: string | null
         }
         Update: {
+          academic_level?: string | null
           avatar_url?: string | null
           bio?: string | null
+          course?: string | null
           created_at?: string | null
           full_name?: string | null
           id?: string
+          institution?: string | null
           location?: string | null
           phone?: string | null
+          province?: string | null
+          student_id?: string | null
           updated_at?: string | null
           website?: string | null
         }
