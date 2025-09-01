@@ -111,8 +111,8 @@ const Auth = () => {
             description: "Agora pode fazer login com suas credenciais.",
             variant: "default",
           });
-          setIsLogin(true); // Muda para o modo login
-          setFormData(prev => ({ ...prev, password: "" })); // Limpa a senha por segurança
+          // Redireciona para página de confirmação de email se necessário
+          navigate("/email-confirmation");
         }
       }
     } catch (error) {
