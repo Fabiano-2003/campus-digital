@@ -1,4 +1,4 @@
-import { Search, Bell, User, Globe, Menu } from "lucide-react";
+import { Search, Bell, User, Globe, Menu, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -6,13 +6,37 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 interface NavbarProps {
   onMenuClick: () => void;
 }
 
 export const Navbar = ({ onMenuClick }: NavbarProps) => {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast({
+        title: "Erro",
+        description: "Erro ao sair da conta",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Logout realizado",
+        description: "Até breve!",
+      });
+    }
+  };
+
   return (
     <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
       <div className="container mx-auto px-4">
@@ -74,12 +98,36 @@ export const Navbar = ({ onMenuClick }: NavbarProps) => {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm">
                   <User className="h-4 w-4" />
-                  <span className="hidden sm:ml-2 sm:inline">Entrar</span>
+                  <span className="hidden sm:ml-2 sm:inline">
+                    {user ? user.email?.split('@')[0] : "Entrar"}
+                  </span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>Entrar</DropdownMenuItem>
-                <DropdownMenuItem>Criar conta</DropdownMenuItem>
+                {user ? (
+                  <>
+                    <DropdownMenuItem>
+                      {user.email}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/perfil")}>
+                      Meu Perfil
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleSignOut}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Sair
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownMenuItem onClick={() => navigate("/auth")}>
+                      Entrar
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/auth")}>
+                      Criar conta
+                    </DropdownMenuItem>
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
