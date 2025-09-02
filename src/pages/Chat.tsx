@@ -50,6 +50,32 @@ export default function Chat() {
     }
   }, [activeTab]);
 
+  // Real-time subscription para mensagens
+  useEffect(() => {
+    if (!selectedConversation) return;
+
+    const channel = supabase
+      .channel(`private_messages_${selectedConversation}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'private_messages',
+          filter: `conversation_id=eq.${selectedConversation}`
+        },
+        (payload) => {
+          const newMessage = payload.new as Message;
+          setMessages(prev => [...prev, newMessage]);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [selectedConversation]);
+
   const getCurrentUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
@@ -98,31 +124,78 @@ export default function Chat() {
     }
   };
 
-  const startConversation = (userId: string) => {
-    setSelectedConversation(userId);
-    setMessages([]); // Em uma implementação real, você carregaria as mensagens da conversa
-    setActiveTab('conversations');
+  const startConversation = async (userId: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Criar ou buscar conversa existente
+      const { data: conversation, error } = await supabase
+        .from('conversations')
+        .upsert({
+          participant_1: user.id < userId ? user.id : userId,
+          participant_2: user.id < userId ? userId : user.id
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setSelectedConversation(conversation.id);
+      loadMessages(conversation.id);
+      setActiveTab('conversations');
+    } catch (error) {
+      console.error('Error starting conversation:', error);
+      toast({
+        title: "Erro ao iniciar conversa",
+        description: "Tente novamente em alguns instantes.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const loadMessages = async (conversationId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('private_messages')
+        .select('*')
+        .eq('conversation_id', conversationId)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+      setMessages(data || []);
+    } catch (error) {
+      console.error('Error loading messages:', error);
+    }
   };
 
   const sendMessage = async () => {
     if (!newMessage.trim() || !selectedConversation) return;
 
-    // Simulando envio de mensagem
-    const newMsg: Message = {
-      id: Date.now().toString(),
-      content: newMessage.trim(),
-      sender_id: currentUserId,
-      created_at: new Date().toISOString(),
-      sender_name: "Você"
-    };
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-    setMessages(prev => [...prev, newMsg]);
-    setNewMessage("");
+      const { error } = await supabase
+        .from('private_messages')
+        .insert([{
+          conversation_id: selectedConversation,
+          sender_id: user.id,
+          content: newMessage.trim()
+        }]);
 
-    toast({
-      title: "Mensagem enviada!",
-      description: "Sua mensagem foi enviada com sucesso.",
-    });
+      if (error) throw error;
+
+      setNewMessage("");
+      // Não precisamos recarregar mensagens pois o real-time vai atualizar automaticamente
+    } catch (error) {
+      console.error('Error sending message:', error);
+      toast({
+        title: "Erro ao enviar mensagem",
+        description: "Tente novamente em alguns instantes.",
+        variant: "destructive",
+      });
+    }
   };
 
   const filteredUsers = users.filter(user =>
