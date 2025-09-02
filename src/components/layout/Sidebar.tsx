@@ -11,6 +11,7 @@ import {
   X,
   ChevronRight,
   Building,
+  UserPlus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -22,12 +23,12 @@ interface SidebarProps {
 
 const menuItems = [
   { icon: Home, label: "Início", href: "/dashboard" },
+  { icon: UserPlus, label: "Seguir", href: "/follow" },
   { icon: BookOpen, label: "Biblioteca", href: "/library" },
   { icon: Users, label: "Grupos", href: "/groups" },
   { icon: MessageCircle, label: "Chat", href: "/chat" },
   { icon: FileText, label: "Documentos", href: "/documents" },
   { icon: Building, label: "Instituições", href: "/institutions" },
-  { icon: User, label: "Perfil", href: "/profile" },
 ];
 
 export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {

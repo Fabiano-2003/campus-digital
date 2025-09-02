@@ -9,12 +9,13 @@ import Auth from "./pages/Auth";
 import GroupDetail from "./pages/GroupDetail";
 import CreateGroup from "./pages/CreateGroup";
 import Groups from "./pages/Groups";
-import Chat from "./pages/Chat";
+import FollowPage from "./pages/FollowPage";
 import Library from "./pages/Library";
 import Documents from "./pages/Documents";
 import Institutions from "./pages/Institutions";
 import InstitutionDetail from "./pages/InstitutionDetail";
 import EmailConfirmation from "./pages/EmailConfirmation";
+import Chat from "./pages/Chat";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 
@@ -34,7 +35,8 @@ const App = () => (
           <Route path="/groups" element={<Groups />} />
           <Route path="/groups/:id" element={<GroupDetail />} />
           <Route path="/create-group" element={<CreateGroup />} />
-          <Route path="/chat" element={<Chat />} />
+            <Route path="/follow" element={<FollowPage />} />
+            <Route path="/chat" element={<Chat />} />
           <Route path="/library" element={<Library />} />
           <Route path="/documents" element={<Documents />} />
           <Route path="/institutions" element={<Institutions />} />

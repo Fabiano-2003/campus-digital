@@ -1,5 +1,7 @@
 import React from 'react';
 import { useUserFollowStats } from '@/hooks/useFollow';
+import { FollowersModal } from '@/components/follow/FollowersModal';
+import { FollowingModal } from '@/components/follow/FollowingModal';
 
 interface UserStatsProps {
   userId: string;
@@ -11,14 +13,15 @@ export function UserStats({ userId, className }: UserStatsProps) {
 
   return (
     <div className={`flex gap-4 text-sm ${className}`}>
-      <div className="text-center">
-        <div className="font-semibold text-foreground">{followerCount}</div>
-        <div className="text-muted-foreground">Seguidores</div>
-      </div>
-      <div className="text-center">
-        <div className="font-semibold text-foreground">{followingCount}</div>
-        <div className="text-muted-foreground">Seguindo</div>
-      </div>
+      <FollowersModal
+        targetType="user"
+        targetId={userId}
+        followerCount={followerCount}
+      />
+      <FollowingModal
+        userId={userId}
+        followingCount={followingCount}
+      />
     </div>
   );
 }
