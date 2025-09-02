@@ -9,7 +9,15 @@ import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { loading } = useAuth();
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect to dashboard if user is logged in
+  useEffect(() => {
+    if (user && !loading) {
+      navigate('/dashboard');
+    }
+  }, [user, loading, navigate]);
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const closeSidebar = () => setSidebarOpen(false);

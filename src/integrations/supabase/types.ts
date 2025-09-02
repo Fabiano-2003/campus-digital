@@ -44,6 +44,247 @@ export type Database = {
         }
         Relationships: []
       }
+      books: {
+        Row: {
+          author: string
+          category: string
+          cover_url: string | null
+          created_at: string
+          description: string | null
+          download_count: number | null
+          file_size: number | null
+          file_url: string | null
+          id: string
+          institution: string | null
+          subject: string | null
+          title: string
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          author: string
+          category: string
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          download_count?: number | null
+          file_size?: number | null
+          file_url?: string | null
+          id?: string
+          institution?: string | null
+          subject?: string | null
+          title: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          author?: string
+          category?: string
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          download_count?: number | null
+          file_size?: number | null
+          file_url?: string | null
+          id?: string
+          institution?: string | null
+          subject?: string | null
+          title?: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: []
+      }
+      feed_posts: {
+        Row: {
+          comments_count: number | null
+          content: string
+          created_at: string
+          id: string
+          likes: number | null
+          metadata: Json | null
+          post_type: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          comments_count?: number | null
+          content: string
+          created_at?: string
+          id?: string
+          likes?: number | null
+          metadata?: Json | null
+          post_type?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          comments_count?: number | null
+          content?: string
+          created_at?: string
+          id?: string
+          likes?: number | null
+          metadata?: Json | null
+          post_type?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      generated_documents: {
+        Row: {
+          content: Json | null
+          created_at: string
+          document_type: string
+          file_url: string | null
+          id: string
+          title: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          content?: Json | null
+          created_at?: string
+          document_type: string
+          file_url?: string | null
+          id?: string
+          title: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          content?: Json | null
+          created_at?: string
+          document_type?: string
+          file_url?: string | null
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      group_members: {
+        Row: {
+          group_id: string | null
+          id: string
+          joined_at: string
+          role: string | null
+          user_id: string | null
+        }
+        Insert: {
+          group_id?: string | null
+          id?: string
+          joined_at?: string
+          role?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          group_id?: string | null
+          id?: string
+          joined_at?: string
+          role?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "study_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_messages: {
+        Row: {
+          created_at: string
+          group_id: string | null
+          id: string
+          message: string
+          message_type: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          group_id?: string | null
+          id?: string
+          message: string
+          message_type?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          group_id?: string | null
+          id?: string
+          message?: string
+          message_type?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_messages_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "study_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      monographs: {
+        Row: {
+          abstract: string | null
+          advisor: string | null
+          author: string
+          category: string
+          course: string | null
+          created_at: string
+          file_url: string
+          id: string
+          institution: string
+          likes: number | null
+          publication_year: number | null
+          title: string
+          updated_at: string
+          uploaded_by: string | null
+          views: number | null
+        }
+        Insert: {
+          abstract?: string | null
+          advisor?: string | null
+          author: string
+          category: string
+          course?: string | null
+          created_at?: string
+          file_url: string
+          id?: string
+          institution: string
+          likes?: number | null
+          publication_year?: number | null
+          title: string
+          updated_at?: string
+          uploaded_by?: string | null
+          views?: number | null
+        }
+        Update: {
+          abstract?: string | null
+          advisor?: string | null
+          author?: string
+          category?: string
+          course?: string | null
+          created_at?: string
+          file_url?: string
+          id?: string
+          institution?: string
+          likes?: number | null
+          publication_year?: number | null
+          title?: string
+          updated_at?: string
+          uploaded_by?: string | null
+          views?: number | null
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           created_at: string | null
@@ -73,6 +314,70 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      post_comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          post_id: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "feed_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_likes: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "feed_posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -122,6 +427,48 @@ export type Database = {
           student_id?: string | null
           updated_at?: string | null
           website?: string | null
+        }
+        Relationships: []
+      }
+      study_groups: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          institution: string | null
+          is_active: boolean | null
+          level: string
+          max_members: number | null
+          name: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          institution?: string | null
+          is_active?: boolean | null
+          level: string
+          max_members?: number | null
+          name: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          institution?: string | null
+          is_active?: boolean | null
+          level?: string
+          max_members?: number | null
+          name?: string
+          subject?: string
+          updated_at?: string
         }
         Relationships: []
       }
