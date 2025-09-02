@@ -11,9 +11,11 @@ import { SearchBar } from "@/components/dashboard/SearchBar";
 import { Navbar } from "@/components/layout/Navbar";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Bell, BookOpen, Users, FileText, User, Home, MessageCircle } from "lucide-react";
+import { Bell, BookOpen, Users, FileText, User, Home, MessageCircle, Play } from "lucide-react";
 import Chat from "@/pages/Chat";
 import Documents from "@/pages/Documents";
+import { DocumentsFeed } from "@/components/feeds/DocumentsFeed";
+import { VideosFeed } from "@/components/feeds/VideosFeed";
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -61,7 +63,7 @@ const Dashboard = () => {
 
             {/* Main Navigation Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-7 mb-8">
+              <TabsList className="grid w-full grid-cols-9 mb-8">
                 <TabsTrigger value="overview" className="flex items-center gap-2">
                   <Home className="h-4 w-4" />
                   Início
@@ -81,6 +83,14 @@ const Dashboard = () => {
                 <TabsTrigger value="chat" className="flex items-center gap-2">
                   <MessageCircle className="h-4 w-4" />
                   Chat
+                </TabsTrigger>
+                <TabsTrigger value="documents-feed" className="flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Feed Docs
+                </TabsTrigger>
+                <TabsTrigger value="videos-feed" className="flex items-center gap-2">
+                  <Play className="h-4 w-4" />
+                  Feed Vídeos
                 </TabsTrigger>
                 <TabsTrigger value="profile" className="flex items-center gap-2">
                   <User className="h-4 w-4" />
@@ -112,6 +122,14 @@ const Dashboard = () => {
 
               <TabsContent value="chat">
                 <Chat />
+              </TabsContent>
+
+              <TabsContent value="documents-feed">
+                <DocumentsFeed />
+              </TabsContent>
+
+              <TabsContent value="videos-feed">
+                <VideosFeed />
               </TabsContent>
 
               <TabsContent value="profile">
