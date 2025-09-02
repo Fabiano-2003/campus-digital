@@ -618,51 +618,111 @@ export type Database = {
       profiles: {
         Row: {
           academic_level: string | null
+          achievements: Json | null
+          availability: string | null
           avatar_url: string | null
           bio: string | null
+          birth_date: string | null
+          career_interests: string[] | null
+          certifications: Json | null
           course: string | null
           created_at: string | null
+          cv_file_url: string | null
+          education: Json | null
           full_name: string | null
+          gender: string | null
+          github_url: string | null
           id: string
           institution: string | null
+          languages: string[] | null
+          linkedin_url: string | null
           location: string | null
           phone: string | null
+          portfolio_url: string | null
+          preferred_work_type: string | null
+          projects: Json | null
           province: string | null
+          salary_expectation: string | null
+          skills: string[] | null
+          social_links: Json | null
           student_id: string | null
+          summary: string | null
+          title: string | null
           updated_at: string | null
           website: string | null
+          work_experience: Json | null
         }
         Insert: {
           academic_level?: string | null
+          achievements?: Json | null
+          availability?: string | null
           avatar_url?: string | null
           bio?: string | null
+          birth_date?: string | null
+          career_interests?: string[] | null
+          certifications?: Json | null
           course?: string | null
           created_at?: string | null
+          cv_file_url?: string | null
+          education?: Json | null
           full_name?: string | null
+          gender?: string | null
+          github_url?: string | null
           id: string
           institution?: string | null
+          languages?: string[] | null
+          linkedin_url?: string | null
           location?: string | null
           phone?: string | null
+          portfolio_url?: string | null
+          preferred_work_type?: string | null
+          projects?: Json | null
           province?: string | null
+          salary_expectation?: string | null
+          skills?: string[] | null
+          social_links?: Json | null
           student_id?: string | null
+          summary?: string | null
+          title?: string | null
           updated_at?: string | null
           website?: string | null
+          work_experience?: Json | null
         }
         Update: {
           academic_level?: string | null
+          achievements?: Json | null
+          availability?: string | null
           avatar_url?: string | null
           bio?: string | null
+          birth_date?: string | null
+          career_interests?: string[] | null
+          certifications?: Json | null
           course?: string | null
           created_at?: string | null
+          cv_file_url?: string | null
+          education?: Json | null
           full_name?: string | null
+          gender?: string | null
+          github_url?: string | null
           id?: string
           institution?: string | null
+          languages?: string[] | null
+          linkedin_url?: string | null
           location?: string | null
           phone?: string | null
+          portfolio_url?: string | null
+          preferred_work_type?: string | null
+          projects?: Json | null
           province?: string | null
+          salary_expectation?: string | null
+          skills?: string[] | null
+          social_links?: Json | null
           student_id?: string | null
+          summary?: string | null
+          title?: string | null
           updated_at?: string | null
           website?: string | null
+          work_experience?: Json | null
         }
         Relationships: []
       }

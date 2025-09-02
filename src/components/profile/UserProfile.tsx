@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { FollowButton } from '@/components/ui/follow-button';
 import { useUserFollowStats } from '@/hooks/useFollow';
-import { Users, BookOpen, FileText } from 'lucide-react';
+import { Users, BookOpen, FileText, MapPin, Briefcase } from 'lucide-react';
 
 interface UserProfileProps {
   userId: string;
@@ -13,6 +13,11 @@ interface UserProfileProps {
   institution?: string;
   course?: string;
   academicLevel?: string;
+  title?: string;
+  skills?: string[];
+  availability?: string;
+  location?: string;
+  province?: string;
   isOwnProfile?: boolean;
 }
 
@@ -24,6 +29,11 @@ export function UserProfile({
   institution,
   course,
   academicLevel,
+  title,
+  skills,
+  availability,
+  location,
+  province,
   isOwnProfile = false
 }: UserProfileProps) {
   const { followingCount, followerCount } = useUserFollowStats(userId);
@@ -41,8 +51,29 @@ export function UserProfile({
           
           <div>
             <h3 className="text-xl font-semibold">{fullName || 'Usuário'}</h3>
+            {title && (
+              <p className="text-sm font-medium text-primary">{title}</p>
+            )}
             {bio && (
               <p className="text-sm text-muted-foreground mt-1">{bio}</p>
+            )}
+            {(location || province) && (
+              <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                <MapPin className="w-3 h-3" />
+                {location && province ? `${location}, ${province}` : location || province}
+              </p>
+            )}
+            {availability && (
+              <div className="mt-2 flex justify-center">
+                <Badge 
+                  variant={availability === 'available' ? 'default' : availability === 'busy' ? 'secondary' : 'destructive'}
+                  className="text-xs"
+                >
+                  <Briefcase className="w-3 h-3 mr-1" />
+                  {availability === 'available' ? 'Disponível' : 
+                   availability === 'busy' ? 'Ocupado' : 'Indisponível'}
+                </Badge>
+              </div>
             )}
           </div>
 
@@ -77,6 +108,25 @@ export function UserProfile({
               {academicLevel && (
                 <Badge variant="outline">
                   {academicLevel}
+                </Badge>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Skills */}
+        {skills && skills.length > 0 && (
+          <div className="space-y-2">
+            <h4 className="font-medium text-sm">Habilidades</h4>
+            <div className="flex flex-wrap gap-1">
+              {skills.slice(0, 6).map((skill, index) => (
+                <Badge key={index} variant="secondary" className="text-xs">
+                  {skill}
+                </Badge>
+              ))}
+              {skills.length > 6 && (
+                <Badge variant="secondary" className="text-xs">
+                  +{skills.length - 6}
                 </Badge>
               )}
             </div>
