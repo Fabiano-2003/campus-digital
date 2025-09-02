@@ -52,19 +52,24 @@ const Dashboard = () => {
       <div className="flex">
         <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
         
-        <main className="flex-1 min-h-screen p-6">
+        <main className="flex-1 min-h-screen p-6 bg-gradient-to-br from-background via-background to-muted/10">
           <div className="max-w-7xl mx-auto">
             {/* Header with search */}
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold text-foreground mb-4">
-                Bem-vindo, {user.user_metadata?.full_name || user.email}
-              </h1>
+            <div className="mb-10 animate-fade-in">
+              <div className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-6">
+                <h1 className="text-4xl font-bold">
+                  Bem-vindo, {user.user_metadata?.full_name || user.email?.split('@')[0]}! 👋
+                </h1>
+                <p className="text-lg text-muted-foreground mt-2">
+                  Explore, aprenda e conecte-se com a comunidade acadêmica
+                </p>
+              </div>
               <SearchBar />
             </div>
 
             {/* Main Navigation Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-10 mb-8">
+              <TabsList className="grid w-full grid-cols-10 mb-8 bg-gradient-to-r from-muted/50 to-muted/30 backdrop-blur-sm border-0 shadow-lg p-2 h-14">
                 <TabsTrigger value="overview" className="flex items-center gap-2">
                   <Home className="h-4 w-4" />
                   Início

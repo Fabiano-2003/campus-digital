@@ -63,56 +63,68 @@ export function DashboardOverview() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 animate-fade-in">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
+        <Card className="hover-lift bg-gradient-to-br from-card to-card/50 border-0 shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total de Livros</CardTitle>
-            <BookOpen className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total de Livros</CardTitle>
+            <div className="p-2 rounded-lg bg-primary/10">
+              <BookOpen className="h-5 w-5 text-primary" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.books || 0}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-3xl font-bold text-foreground">{stats?.books || 0}</div>
+            <p className="text-xs text-success flex items-center gap-1 mt-1">
+              <TrendingUp className="h-3 w-3" />
               +20% em relação ao mês passado
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="hover-lift bg-gradient-to-br from-card to-card/50 border-0 shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Monografias</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">Monografias</CardTitle>
+            <div className="p-2 rounded-lg bg-secondary/10">
+              <FileText className="h-5 w-5 text-secondary" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.monographs || 0}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-3xl font-bold text-foreground">{stats?.monographs || 0}</div>
+            <p className="text-xs text-success flex items-center gap-1 mt-1">
+              <TrendingUp className="h-3 w-3" />
               +15% em relação ao mês passado
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="hover-lift bg-gradient-to-br from-card to-card/50 border-0 shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Grupos Ativos</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">Grupos Ativos</CardTitle>
+            <div className="p-2 rounded-lg bg-accent/10">
+              <Users className="h-5 w-5 text-accent" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.groups || 0}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-3xl font-bold text-foreground">{stats?.groups || 0}</div>
+            <p className="text-xs text-success flex items-center gap-1 mt-1">
+              <TrendingUp className="h-3 w-3" />
               +12% em relação ao mês passado
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="hover-lift bg-gradient-to-br from-card to-card/50 border-0 shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Posts no Feed</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">Posts no Feed</CardTitle>
+            <div className="p-2 rounded-lg bg-info/10">
+              <TrendingUp className="h-5 w-5 text-info" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.posts || 0}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-3xl font-bold text-foreground">{stats?.posts || 0}</div>
+            <p className="text-xs text-success flex items-center gap-1 mt-1">
+              <TrendingUp className="h-3 w-3" />
               +25% em relação ao mês passado
             </p>
           </CardContent>
@@ -120,39 +132,52 @@ export function DashboardOverview() {
       </div>
 
       {/* Recent Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Recent Books */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Últimos Livros Adicionados</CardTitle>
-            <CardDescription>
-              Confira os livros mais recentes na plataforma
-            </CardDescription>
+        <Card className="hover-lift bg-gradient-to-br from-card to-card/50 border-0 shadow-lg">
+          <CardHeader className="pb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <BookOpen className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-lg">Últimos Livros Adicionados</CardTitle>
+                <CardDescription>
+                  Confira os livros mais recentes na plataforma
+                </CardDescription>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {recentBooks?.map((book) => (
-                <div key={book.id} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="flex-1">
-                    <h4 className="font-medium">{book.title}</h4>
-                    <p className="text-sm text-muted-foreground">por {book.author}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Badge variant="secondary">{book.category}</Badge>
-                      <span className="text-xs text-muted-foreground flex items-center gap-1">
-                        <Download className="h-3 w-3" />
-                        {book.download_count}
+                <div key={book.id} className="group p-4 rounded-lg border border-border/50 hover:border-primary/20 hover:bg-muted/30 transition-all duration-300">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 space-y-2">
+                      <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors">{book.title}</h4>
+                      <p className="text-sm text-muted-foreground">por {book.author}</p>
+                      <div className="flex items-center gap-3">
+                        <Badge variant="secondary" className="text-xs">{book.category}</Badge>
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">
+                          <Download className="h-3 w-3" />
+                          {book.download_count} downloads
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-xs text-muted-foreground ml-4 flex flex-col items-end gap-1">
+                      <Eye className="h-3 w-3 text-primary" />
+                      <span>
+                        {formatDistanceToNow(new Date(book.created_at), { 
+                          addSuffix: true, 
+                          locale: ptBR 
+                        })}
                       </span>
                     </div>
                   </div>
-                  <div className="text-xs text-muted-foreground">
-                    {formatDistanceToNow(new Date(book.created_at), { 
-                      addSuffix: true, 
-                      locale: ptBR 
-                    })}
-                  </div>
                 </div>
               ))}
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full mt-4">
+                <BookOpen className="h-4 w-4 mr-2" />
                 Ver Todos os Livros
               </Button>
             </div>
@@ -160,34 +185,44 @@ export function DashboardOverview() {
         </Card>
 
         {/* Active Study Groups */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Grupos de Estudo Ativos</CardTitle>
-            <CardDescription>
-              Grupos com mais atividade recente
-            </CardDescription>
+        <Card className="hover-lift bg-gradient-to-br from-card to-card/50 border-0 shadow-lg">
+          <CardHeader className="pb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-secondary/10">
+                <Users className="h-5 w-5 text-secondary" />
+              </div>
+              <div>
+                <CardTitle className="text-lg">Grupos de Estudo Ativos</CardTitle>
+                <CardDescription>
+                  Grupos com mais atividade recente
+                </CardDescription>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {activeGroups?.map((group) => (
-                <div key={group.id} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="flex-1">
-                    <h4 className="font-medium">{group.name}</h4>
-                    <p className="text-sm text-muted-foreground">{group.subject}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Badge variant="outline">{group.level}</Badge>
-                      <span className="text-xs text-muted-foreground flex items-center gap-1">
-                        <Users className="h-3 w-3" />
-                        {group.group_members?.[0]?.count || 0} membros
-                      </span>
+                <div key={group.id} className="group p-4 rounded-lg border border-border/50 hover:border-secondary/20 hover:bg-muted/30 transition-all duration-300">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 space-y-2">
+                      <h4 className="font-semibold text-foreground group-hover:text-secondary transition-colors">{group.name}</h4>
+                      <p className="text-sm text-muted-foreground">{group.subject}</p>
+                      <div className="flex items-center gap-3">
+                        <Badge variant="outline" className="text-xs">{group.level}</Badge>
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">
+                          <Users className="h-3 w-3" />
+                          {group.group_members?.[0]?.count || 0} membros
+                        </span>
+                      </div>
                     </div>
+                    <Button variant="secondary" size="sm" className="group-hover:scale-105 transition-transform">
+                      Participar
+                    </Button>
                   </div>
-                  <Button variant="outline" size="sm">
-                    Participar
-                  </Button>
                 </div>
               ))}
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full mt-4">
+                <Users className="h-4 w-4 mr-2" />
                 Ver Todos os Grupos
               </Button>
             </div>

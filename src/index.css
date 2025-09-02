@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+/* Enhanced design system with beautiful gradients, animations, and modern aesthetics.
 All colors MUST be HSL.
 */
 
@@ -19,6 +19,7 @@ All colors MUST be HSL.
 
     --primary: 229 84% 32%;
     --primary-foreground: 0 0% 98%;
+    --primary-glow: 229 84% 42%;
 
     --secondary: 151 55% 42%;
     --secondary-foreground: 0 0% 98%;
@@ -36,14 +37,27 @@ All colors MUST be HSL.
     --input: 214.3 31.8% 91.4%;
     --ring: 229 84% 32%;
 
-    /* Academic platform specific tokens */
+    /* Enhanced academic platform tokens */
     --hero-gradient: linear-gradient(135deg, hsl(229 84% 32%), hsl(151 55% 42%));
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(210 40% 98%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 40% 99%));
     --card-hover: 0 0% 96%;
     --success: 151 55% 42%;
     --warning: 43 96% 56%;
     --info: 199 89% 48%;
 
-    --radius: 0.5rem;
+    /* Shadows */
+    --shadow-elegant: 0 4px 20px -4px hsl(229 84% 32% / 0.1);
+    --shadow-card: 0 2px 10px -2px hsl(0 0% 0% / 0.1);
+    --shadow-glow: 0 0 20px hsl(229 84% 42% / 0.3);
+
+    --radius: 0.75rem;
+    --radius-lg: 1rem;
+
+    /* Animation durations */
+    --duration-fast: 0.15s;
+    --duration-normal: 0.3s;
+    --duration-slow: 0.5s;
 
     --sidebar-background: 0 0% 98%;
 
@@ -72,8 +86,9 @@ All colors MUST be HSL.
     --popover: 215 28% 12%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 229 84% 32%;
+    --primary: 229 84% 42%;
     --primary-foreground: 0 0% 98%;
+    --primary-glow: 229 84% 52%;
 
     --secondary: 151 55% 42%;
     --secondary-foreground: 0 0% 98%;
@@ -89,14 +104,21 @@ All colors MUST be HSL.
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 229 84% 32%;
+    --ring: 229 84% 42%;
 
-    /* Dark mode adjustments */
-    --hero-gradient: linear-gradient(135deg, hsl(229 84% 32%), hsl(151 55% 42%));
+    /* Enhanced dark mode */
+    --hero-gradient: linear-gradient(135deg, hsl(229 84% 42%), hsl(151 55% 42%));
+    --gradient-subtle: linear-gradient(180deg, hsl(215 28% 9%), hsl(217.2 32.6% 11%));
+    --gradient-card: linear-gradient(145deg, hsl(215 28% 12%), hsl(217.2 32.6% 14%));
     --card-hover: 217.2 32.6% 15%;
     --success: 151 55% 42%;
     --warning: 43 96% 56%;
     --info: 199 89% 48%;
+
+    /* Dark shadows */
+    --shadow-elegant: 0 4px 20px -4px hsl(0 0% 0% / 0.4);
+    --shadow-card: 0 2px 10px -2px hsl(0 0% 0% / 0.3);
+    --shadow-glow: 0 0 20px hsl(229 84% 52% / 0.4);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -114,6 +136,69 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-gradient-to-br from-background to-muted/20 text-foreground antialiased;
+    background-attachment: fixed;
+  }
+
+  /* Enhanced animations */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes glow {
+    0%, 100% {
+      box-shadow: 0 0 20px hsl(var(--primary) / 0.1);
+    }
+    50% {
+      box-shadow: 0 0 30px hsl(var(--primary) / 0.2);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in var(--duration-normal) ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scale-in var(--duration-normal) ease-out;
+  }
+
+  .animate-glow {
+    animation: glow 3s ease-in-out infinite;
+  }
+
+  /* Enhanced hover effects */
+  .hover-lift {
+    @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-lg;
+  }
+
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)];
+  }
+
+  /* Glass morphism effect */
+  .glass {
+    @apply backdrop-blur-md bg-white/10 border border-white/20;
+  }
+
+  .glass-dark {
+    @apply backdrop-blur-md bg-black/10 border border-white/10;
   }
 }
