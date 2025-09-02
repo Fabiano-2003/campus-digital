@@ -5,10 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { BreadcrumbNav } from "@/components/ui/breadcrumb-nav";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Search, MapPin, Calendar, Users, Star, ExternalLink, Building } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 interface Institution {
   id: string;
@@ -125,9 +127,10 @@ export default function Institutions() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <AppLayout>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
+          <BreadcrumbNav />
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-foreground mb-4">
               Instituições de Ensino
@@ -313,6 +316,6 @@ export default function Institutions() {
           )}
         </div>
       </div>
-    </div>
+    </AppLayout>
   );
 }

@@ -1,33 +1,34 @@
 import { BookOpen, Mail, Heart, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 export const Footer = () => {
   const footerSections = [
     {
       title: "Plataforma",
       links: [
-        { label: "Biblioteca", href: "/biblioteca" },
-        { label: "Documentos", href: "/documentos" },
-        { label: "Comunidade", href: "/comunidade" },
-        { label: "Grupos de Estudo", href: "/grupos" }
+        { label: "Biblioteca", href: "/library" },
+        { label: "Documentos", href: "/documents" },
+        { label: "Seguir", href: "/follow" },
+        { label: "Grupos de Estudo", href: "/groups" }
       ]
     },
     {
       title: "Recursos",
       links: [
-        { label: "Ajuda", href: "/ajuda" },
-        { label: "API", href: "/api" },
-        { label: "Desenvolvedores", href: "/dev" },
-        { label: "Modo Leve", href: "/lite" }
+        { label: "Dashboard", href: "/dashboard" },
+        { label: "Chat", href: "/chat" },
+        { label: "Instituições", href: "/institutions" },
+        { label: "Criar Grupo", href: "/create-group" }
       ]
     },
     {
       title: "Institucional",
       links: [
-        { label: "Sobre", href: "/sobre" },
-        { label: "Termos de Uso", href: "/termos" },
-        { label: "Privacidade", href: "/privacidade" },
-        { label: "Contacto", href: "/contacto" }
+        { label: "Início", href: "/" },
+        { label: "Autenticação", href: "/auth" },
+        { label: "Email Confirmação", href: "/email-confirmation" },
+        { label: "Contato", href: "mailto:contato@saberangola.com" }
       ]
     }
   ];
@@ -61,12 +62,21 @@ export const Footer = () => {
               <ul className="space-y-2">
                 {section.links.map((link) => (
                   <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="text-muted-foreground hover:text-primary transition-colors text-sm"
-                    >
-                      {link.label}
-                    </a>
+                    {link.href.startsWith('mailto:') ? (
+                      <a
+                        href={link.href}
+                        className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                      >
+                        {link.label}
+                      </a>
+                    ) : (
+                      <Link
+                        to={link.href}
+                        className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                      >
+                        {link.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -83,9 +93,11 @@ export const Footer = () => {
           </div>
           
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="sm">
-              <Mail className="h-4 w-4 mr-2" />
-              Contactar
+            <Button variant="ghost" size="sm" asChild>
+              <a href="mailto:contato@saberangola.com">
+                <Mail className="h-4 w-4 mr-2" />
+                Contactar
+              </a>
             </Button>
             <div className="text-sm text-muted-foreground">
               © 2024 SaberAngola. Todos os direitos reservados.

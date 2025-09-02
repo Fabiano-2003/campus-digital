@@ -7,8 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/components/ui/use-toast";
 import { FollowButton } from "@/components/ui/follow-button";
+import { BreadcrumbNav } from "@/components/ui/breadcrumb-nav";
 import { supabase } from "@/integrations/supabase/client";
 import { Plus, Search, Users, MessageCircle, Calendar } from "lucide-react";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 interface StudyGroup {
   id: string;
@@ -123,8 +125,9 @@ export default function Groups() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <AppLayout>
       <div className="container mx-auto px-4 py-8">
+        <BreadcrumbNav />
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-bold">Grupos de Estudo</h1>
@@ -230,6 +233,6 @@ export default function Groups() {
           </div>
         )}
       </div>
-    </div>
+    </AppLayout>
   );
 }

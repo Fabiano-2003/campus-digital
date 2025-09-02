@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Search, Send, Users, MessageCircle } from "lucide-react";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 interface User {
   id: string;
@@ -207,7 +208,7 @@ export default function Chat() {
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <AppLayout>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col lg:flex-row gap-6 h-[600px]">
@@ -421,6 +422,6 @@ export default function Chat() {
           </div>
         </div>
       </div>
-    </div>
+    </AppLayout>
   );
 }

@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 interface PublicContent {
   id: string;
@@ -28,6 +30,8 @@ interface PublicContent {
 }
 
 export const PublicFeed = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [filter, setFilter] = useState<'all' | 'posts' | 'videos' | 'monographs' | 'books'>('all');
 
   const { data: publicContent, isLoading } = useQuery({
@@ -279,7 +283,19 @@ export const PublicFeed = () => {
                       </Button>
                       
                       {(item.file_url || item.video_url) && (
-                        <Button variant="outline" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => {
+                            if (!user) {
+                              navigate('/auth');
+                              return;
+                            }
+                            if (item.type === 'video') navigate('/library');
+                            else if (item.type === 'monograph' || item.type === 'book') navigate('/documents');
+                            else navigate('/dashboard');
+                          }}
+                        >
                           {item.type === 'video' ? 'Assistir' : 'Ver Mais'}
                         </Button>
                       )}

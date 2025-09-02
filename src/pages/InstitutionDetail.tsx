@@ -24,6 +24,7 @@ import {
   Award,
   Wifi
 } from "lucide-react";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 interface Institution {
   id: string;
@@ -215,7 +216,7 @@ export default function InstitutionDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <AppLayout>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <Button 
@@ -521,6 +522,6 @@ export default function InstitutionDetail() {
           </Card>
         </div>
       </div>
-    </div>
+    </AppLayout>
   );
 }

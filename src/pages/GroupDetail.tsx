@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Users, Send, Calendar, MapPin, BookOpen } from "lucide-react";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 interface GroupDetail {
   id: string;
@@ -248,7 +249,7 @@ export default function GroupDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <AppLayout>
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center gap-4 mb-8">
           <Button variant="ghost" onClick={() => navigate('/groups')}>
@@ -391,6 +392,6 @@ export default function GroupDetail() {
           </div>
         </div>
       </div>
-    </div>
+    </AppLayout>
   );
 }

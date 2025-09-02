@@ -3,8 +3,13 @@ import { Search, BookOpen, Users, FileEdit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 export const HeroSection = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
@@ -24,19 +29,22 @@ export const HeroSection = () => {
       icon: FileEdit,
       title: "Gerar Documento",
       description: "Criar CV, carta ou trabalho",
-      color: "bg-success/10 text-success"
+      color: "bg-success/10 text-success",
+      href: user ? "/dashboard" : "/auth"
     },
     {
       icon: Users,
       title: "Grupos de Estudo",
       description: "Juntar-se à comunidade",
-      color: "bg-info/10 text-info"
+      color: "bg-info/10 text-info",
+      href: user ? "/groups" : "/auth"
     },
     {
       icon: BookOpen,
       title: "Biblioteca",
       description: "Explorar monografias",
-      color: "bg-warning/10 text-warning"
+      color: "bg-warning/10 text-warning",
+      href: user ? "/library" : "/auth"
     }
   ];
 
@@ -83,7 +91,10 @@ export const HeroSection = () => {
                   placeholder="Pesquisar livros, monografias, documentos..."
                   className="border-0 bg-transparent text-lg focus-visible:ring-0 focus-visible:ring-offset-0"
                 />
-                <Button className="bg-hero-gradient hover:opacity-90 transition-opacity">
+                <Button 
+                  className="bg-hero-gradient hover:opacity-90 transition-opacity"
+                  onClick={() => navigate(user ? "/library" : "/auth")}
+                >
                   Pesquisar
                 </Button>
               </div>
@@ -102,7 +113,10 @@ export const HeroSection = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Card className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-primary/20">
+                <Card 
+                  className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-primary/20"
+                  onClick={() => navigate(action.href)}
+                >
                   <CardContent className="p-6 text-center">
                     <div className={`w-12 h-12 mx-auto mb-4 rounded-lg flex items-center justify-center ${action.color}`}>
                       <action.icon className="h-6 w-6" />

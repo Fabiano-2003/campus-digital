@@ -7,8 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
+import { BreadcrumbNav } from "@/components/ui/breadcrumb-nav";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Upload, FileText, Download, Eye } from "lucide-react";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 interface Document {
   id: string;
@@ -161,8 +163,9 @@ export default function Documents() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <AppLayout>
       <div className="container mx-auto px-4 py-8">
+        <BreadcrumbNav />
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-bold">Meus Documentos</h1>
@@ -297,6 +300,6 @@ export default function Documents() {
           </div>
         )}
       </div>
-    </div>
+    </AppLayout>
   );
 }

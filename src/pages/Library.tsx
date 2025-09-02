@@ -4,8 +4,10 @@ import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
+import { BreadcrumbNav } from "@/components/ui/breadcrumb-nav";
 import { supabase } from "@/integrations/supabase/client";
 import { Search, BookOpen, Download, Eye, Upload, Plus } from "lucide-react";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 interface Book {
   id: string;
@@ -210,8 +212,9 @@ export default function Library() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <AppLayout>
       <div className="container mx-auto px-4 py-8">
+        <BreadcrumbNav />
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-bold">Biblioteca Acadêmica</h1>
@@ -409,6 +412,6 @@ export default function Library() {
           )}
         </div>
       </div>
-    </div>
+    </AppLayout>
   );
 }
