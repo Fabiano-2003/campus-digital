@@ -10,6 +10,8 @@ import GroupDetail from "./pages/GroupDetail";
 import CreateGroup from "./pages/CreateGroup";
 import Groups from "./pages/Groups";
 import Chat from "./pages/Chat";
+import Library from "./pages/Library";
+import Documents from "./pages/Documents";
 import EmailConfirmation from "./pages/EmailConfirmation";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
@@ -31,6 +33,8 @@ const App = () => (
           <Route path="/groups/:id" element={<GroupDetail />} />
           <Route path="/create-group" element={<CreateGroup />} />
           <Route path="/chat" element={<Chat />} />
+          <Route path="/library" element={<Library />} />
+          <Route path="/documents" element={<Documents />} />
           <Route path="/email-confirmation" element={<EmailConfirmation />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
