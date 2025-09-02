@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { FollowButton } from '@/components/ui/follow-button';
-import { useFollowingCount } from '@/hooks/useFollow';
+import { useUserFollowStats } from '@/hooks/useFollow';
 import { Users, BookOpen, FileText } from 'lucide-react';
 
 interface UserProfileProps {
@@ -26,7 +26,7 @@ export function UserProfile({
   academicLevel,
   isOwnProfile = false
 }: UserProfileProps) {
-  const { data: followingCount = 0 } = useFollowingCount(userId);
+  const { followingCount, followerCount } = useUserFollowStats(userId);
 
   return (
     <Card className="w-full max-w-md">

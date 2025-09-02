@@ -1,52 +1,54 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from '@/components/ui/dropdown-menu';
-import { ChevronDown, UserPlus, UserMinus, Users } from 'lucide-react';
+import React from 'react';
+import { Button } from './button';
+import { UserPlus, UserMinus, Users } from 'lucide-react';
 import { useFollow, FollowTargetType, FollowLevel } from '@/hooks/useFollow';
-import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/useAuth';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from './dropdown-menu';
+import { ChevronDown } from 'lucide-react';
 
 interface FollowButtonProps {
   targetType: FollowTargetType;
   targetId: string;
-  showFollowLevel?: boolean;
+  showFollowerCount?: boolean;
+  allowLevelSelection?: boolean;
   className?: string;
-  size?: 'default' | 'sm' | 'lg';
 }
 
-const followLevelLabels: Record<FollowLevel, string> = {
+const levelLabels: Record<FollowLevel, string> = {
   public: 'Público',
   member: 'Membro',
   moderator: 'Moderador',
   admin: 'Administrador',
-  owner: 'Proprietário'
+  owner: 'Proprietário',
 };
 
-export function FollowButton({ 
-  targetType, 
-  targetId, 
-  showFollowLevel = false,
+export function FollowButton({
+  targetType,
+  targetId,
+  showFollowerCount = false,
+  allowLevelSelection = false,
   className,
-  size = 'default'
 }: FollowButtonProps) {
-  const [showLevelMenu, setShowLevelMenu] = useState(false);
-  
-  const {
-    isFollowing,
-    isCheckingFollow,
-    followRelationship,
-    followerCount,
-    follow,
-    unfollow,
-    updateFollowLevel,
-    isFollowPending,
-    isUnfollowPending,
-    isUpdatePending
+  const { user } = useAuth();
+  const { 
+    isFollowing, 
+    followerCount, 
+    isLoading, 
+    follow, 
+    unfollow, 
+    isFollowLoading, 
+    isUnfollowLoading 
   } = useFollow(targetType, targetId);
+
+  if (!user) return null;
+
+  // Don't show follow button for user's own profile
+  if (targetType === 'user' && targetId === user.id) return null;
 
   const handleFollow = (level: FollowLevel = 'public') => {
     follow({ level });
@@ -56,111 +58,89 @@ export function FollowButton({
     unfollow();
   };
 
-  const handleUpdateLevel = (level: FollowLevel) => {
-    updateFollowLevel({ level });
-    setShowLevelMenu(false);
-  };
-
-  if (isCheckingFollow) {
+  if (isLoading) {
     return (
-      <Button 
-        variant="outline" 
-        disabled 
-        size={size}
-        className={className}
-      >
+      <Button variant="outline" disabled className={className}>
         <Users className="w-4 h-4 mr-2" />
         Carregando...
       </Button>
     );
   }
 
-  if (!isFollowing) {
-    if (showFollowLevel && targetType === 'group') {
-      return (
+  if (isFollowing) {
+    return (
+      <div className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          onClick={handleUnfollow}
+          disabled={isUnfollowLoading}
+          className={className}
+        >
+          <UserMinus className="w-4 h-4 mr-2" />
+          Seguindo
+        </Button>
+        {showFollowerCount && (
+          <span className="text-sm text-muted-foreground">
+            {followerCount} seguidores
+          </span>
+        )}
+      </div>
+    );
+  }
+
+  if (allowLevelSelection) {
+    return (
+      <div className="flex items-center gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button 
               variant="default" 
-              size={size}
+              disabled={isFollowLoading}
               className={className}
-              disabled={isFollowPending}
             >
               <UserPlus className="w-4 h-4 mr-2" />
               Seguir
               <ChevronDown className="w-4 h-4 ml-2" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem onClick={() => handleFollow('public')}>
-              Como Público
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleFollow('member')}>
-              Como Membro
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    }
-
-    return (
-      <Button 
-        variant="default" 
-        onClick={() => handleFollow()}
-        disabled={isFollowPending}
-        size={size}
-        className={className}
-      >
-        <UserPlus className="w-4 h-4 mr-2" />
-        Seguir
-        {followerCount > 0 && (
-          <span className="ml-2 text-xs bg-background/10 px-1.5 py-0.5 rounded">
-            {followerCount}
-          </span>
-        )}
-      </Button>
-    );
-  }
-
-  return (
-    <div className={cn("flex items-center gap-2", className)}>
-      <Button 
-        variant="outline" 
-        onClick={handleUnfollow}
-        disabled={isUnfollowPending}
-        size={size}
-      >
-        <UserMinus className="w-4 h-4 mr-2" />
-        Seguindo
-        {followerCount > 0 && (
-          <span className="ml-2 text-xs bg-muted px-1.5 py-0.5 rounded">
-            {followerCount}
-          </span>
-        )}
-      </Button>
-
-      {showFollowLevel && followRelationship && (
-        <DropdownMenu open={showLevelMenu} onOpenChange={setShowLevelMenu}>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" disabled={isUpdatePending}>
-              {followLevelLabels[followRelationship.follow_level]}
-              <ChevronDown className="w-3 h-3 ml-1" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {Object.entries(followLevelLabels).map(([level, label]) => (
-              <DropdownMenuItem 
+          <DropdownMenuContent 
+            align="end" 
+            className="w-48 bg-background border shadow-lg z-50"
+          >
+            {(Object.keys(levelLabels) as FollowLevel[]).map((level) => (
+              <DropdownMenuItem
                 key={level}
-                onClick={() => handleUpdateLevel(level as FollowLevel)}
-                className={cn(
-                  followRelationship.follow_level === level && "bg-muted"
-                )}
+                onClick={() => handleFollow(level)}
+                className="hover:bg-accent cursor-pointer"
               >
-                {label}
+                {levelLabels[level]}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        {showFollowerCount && (
+          <span className="text-sm text-muted-foreground">
+            {followerCount} seguidores
+          </span>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <Button
+        onClick={() => handleFollow()}
+        disabled={isFollowLoading}
+        className={className}
+      >
+        <UserPlus className="w-4 h-4 mr-2" />
+        Seguir
+      </Button>
+      {showFollowerCount && (
+        <span className="text-sm text-muted-foreground">
+          {followerCount} seguidores
+        </span>
       )}
     </div>
   );

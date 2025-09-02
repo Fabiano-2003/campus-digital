@@ -212,8 +212,8 @@ export default function Groups() {
                       <FollowButton 
                         targetType="group" 
                         targetId={group.id}
-                        showFollowLevel={true}
-                        size="sm"
+                        allowLevelSelection={true}
+                        showFollowerCount={true}
                       />
                       <Button 
                         size="sm"

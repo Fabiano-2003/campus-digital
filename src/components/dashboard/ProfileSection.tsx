@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UserStats } from "@/components/ui/user-stats";
 import { User, Mail, Phone, MapPin, GraduationCap, Award, Edit, Save, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -440,6 +441,10 @@ export function ProfileSection() {
               </CardDescription>
             </CardHeader>
             <CardContent>
+              <div className="mb-6">
+                <UserStats userId={user?.id || ''} className="justify-center" />
+              </div>
+              
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{userStats?.books || 0}</div>
