@@ -161,6 +161,39 @@ export type Database = {
         }
         Relationships: []
       }
+      follows: {
+        Row: {
+          created_at: string
+          follow_level: Database["public"]["Enums"]["follow_level"]
+          follower_id: string
+          id: string
+          status: Database["public"]["Enums"]["follow_status"]
+          target_id: string
+          target_type: Database["public"]["Enums"]["follow_target_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          follow_level?: Database["public"]["Enums"]["follow_level"]
+          follower_id: string
+          id?: string
+          status?: Database["public"]["Enums"]["follow_status"]
+          target_id: string
+          target_type: Database["public"]["Enums"]["follow_target_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          follow_level?: Database["public"]["Enums"]["follow_level"]
+          follower_id?: string
+          id?: string
+          status?: Database["public"]["Enums"]["follow_status"]
+          target_id?: string
+          target_type?: Database["public"]["Enums"]["follow_target_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       generated_documents: {
         Row: {
           content: Json | null
@@ -779,10 +812,30 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_follower_count: {
+        Args: {
+          _target_id: string
+          _target_type: Database["public"]["Enums"]["follow_target_type"]
+        }
+        Returns: number
+      }
+      get_following_count: {
+        Args: { _user_id: string }
+        Returns: number
+      }
+      is_following: {
+        Args: {
+          _follower_id: string
+          _target_id: string
+          _target_type: Database["public"]["Enums"]["follow_target_type"]
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      follow_level: "public" | "member" | "moderator" | "admin" | "owner"
+      follow_status: "pending" | "accepted" | "blocked"
+      follow_target_type: "user" | "group" | "page" | "entity"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -909,6 +962,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      follow_level: ["public", "member", "moderator", "admin", "owner"],
+      follow_status: ["pending", "accepted", "blocked"],
+      follow_target_type: ["user", "group", "page", "entity"],
+    },
   },
 } as const
