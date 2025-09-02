@@ -11,7 +11,9 @@ import { SearchBar } from "@/components/dashboard/SearchBar";
 import { Navbar } from "@/components/layout/Navbar";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Bell, BookOpen, Users, FileText, User, Home } from "lucide-react";
+import { Bell, BookOpen, Users, FileText, User, Home, MessageCircle } from "lucide-react";
+import Chat from "@/pages/Chat";
+import Documents from "@/pages/Documents";
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -59,7 +61,7 @@ const Dashboard = () => {
 
             {/* Main Navigation Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-6 mb-8">
+              <TabsList className="grid w-full grid-cols-7 mb-8">
                 <TabsTrigger value="overview" className="flex items-center gap-2">
                   <Home className="h-4 w-4" />
                   Início
@@ -75,6 +77,10 @@ const Dashboard = () => {
                 <TabsTrigger value="documents" className="flex items-center gap-2">
                   <FileText className="h-4 w-4" />
                   Documentos
+                </TabsTrigger>
+                <TabsTrigger value="chat" className="flex items-center gap-2">
+                  <MessageCircle className="h-4 w-4" />
+                  Chat
                 </TabsTrigger>
                 <TabsTrigger value="profile" className="flex items-center gap-2">
                   <User className="h-4 w-4" />
@@ -101,7 +107,11 @@ const Dashboard = () => {
               </TabsContent>
 
               <TabsContent value="documents">
-                <DocumentGenerator />
+                <Documents />
+              </TabsContent>
+
+              <TabsContent value="chat">
+                <Chat />
               </TabsContent>
 
               <TabsContent value="profile">
