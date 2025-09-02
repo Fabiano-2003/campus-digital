@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/components/ui/use-toast";
+import { FollowButton } from "@/components/ui/follow-button";
 import { supabase } from "@/integrations/supabase/client";
 import { Plus, Search, Users, MessageCircle, Calendar } from "lucide-react";
 
@@ -208,6 +209,12 @@ export default function Groups() {
                         <MessageCircle className="h-4 w-4 mr-1" />
                         Ver Grupo
                       </Button>
+                      <FollowButton 
+                        targetType="group" 
+                        targetId={group.id}
+                        showFollowLevel={true}
+                        size="sm"
+                      />
                       <Button 
                         size="sm"
                         onClick={() => joinGroup(group.id)}
