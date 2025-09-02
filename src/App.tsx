@@ -6,6 +6,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import GroupDetail from "./pages/GroupDetail";
+import CreateGroup from "./pages/CreateGroup";
+import Groups from "./pages/Groups";
+import Chat from "./pages/Chat";
 import EmailConfirmation from "./pages/EmailConfirmation";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
@@ -22,8 +26,12 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/email-confirmation" element={<EmailConfirmation />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/groups" element={<Groups />} />
+          <Route path="/groups/:id" element={<GroupDetail />} />
+          <Route path="/create-group" element={<CreateGroup />} />
+          <Route path="/chat" element={<Chat />} />
+          <Route path="/email-confirmation" element={<EmailConfirmation />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   BookOpen,
   FileText,
   Users,
   User,
   Home,
+  MessageCircle,
   X,
   ChevronRight,
 } from "lucide-react";
@@ -18,15 +20,18 @@ interface SidebarProps {
 }
 
 const menuItems = [
-  { icon: Home, label: "Início", href: "/", active: true },
-  { icon: BookOpen, label: "Biblioteca", href: "/biblioteca" },
-  { icon: FileText, label: "Documentos", href: "/documentos" },
-  { icon: Users, label: "Comunidade", href: "/comunidade" },
-  { icon: User, label: "Perfil", href: "/perfil" },
+  { icon: Home, label: "Início", href: "/dashboard" },
+  { icon: BookOpen, label: "Biblioteca", href: "/library" },
+  { icon: Users, label: "Grupos", href: "/groups" },
+  { icon: MessageCircle, label: "Chat", href: "/chat" },
+  { icon: FileText, label: "Documentos", href: "/documents" },
+  { icon: User, label: "Perfil", href: "/profile" },
 ];
 
 export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <>
@@ -78,32 +83,38 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
 
           {/* Navigation */}
           <nav className="space-y-2">
-            {menuItems.map((item) => (
-              <motion.div
-                key={item.label}
-                onHoverStart={() => setHoveredItem(item.label)}
-                onHoverEnd={() => setHoveredItem(null)}
-                className="relative"
-              >
-                <Button
-                  variant={item.active ? "secondary" : "ghost"}
-                  className={cn(
-                    "w-full justify-start h-12 transition-all duration-200",
-                    !isOpen && "md:justify-center md:w-12",
-                    item.active && "bg-primary/10 text-primary border-primary/20"
-                  )}
+            {menuItems.map((item) => {
+              const isActive = location.pathname === item.href;
+              return (
+                <motion.div
+                  key={item.label}
+                  onHoverStart={() => setHoveredItem(item.label)}
+                  onHoverEnd={() => setHoveredItem(null)}
+                  className="relative"
                 >
-                  <item.icon className="h-5 w-5 shrink-0" />
-                  <motion.span
-                    animate={{ opacity: isOpen ? 1 : 0, width: isOpen ? "auto" : 0 }}
-                    className="ml-3 overflow-hidden whitespace-nowrap"
+                  <Button
+                    variant={isActive ? "secondary" : "ghost"}
+                    className={cn(
+                      "w-full justify-start h-12 transition-all duration-200",
+                      !isOpen && "md:justify-center md:w-12",
+                      isActive && "bg-primary/10 text-primary border-primary/20"
+                    )}
+                    onClick={() => {
+                      navigate(item.href);
+                      onClose();
+                    }}
                   >
-                    {item.label}
-                  </motion.span>
-                  {item.active && isOpen && (
-                    <ChevronRight className="h-4 w-4 ml-auto text-primary" />
-                  )}
-                </Button>
+                    <item.icon className="h-5 w-5 shrink-0" />
+                    <motion.span
+                      animate={{ opacity: isOpen ? 1 : 0, width: isOpen ? "auto" : 0 }}
+                      className="ml-3 overflow-hidden whitespace-nowrap"
+                    >
+                      {item.label}
+                    </motion.span>
+                    {isActive && isOpen && (
+                      <ChevronRight className="h-4 w-4 ml-auto text-primary" />
+                    )}
+                  </Button>
 
                 {/* Tooltip for collapsed state */}
                 <AnimatePresence>
@@ -118,8 +129,9 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </nav>
         </div>
       </motion.aside>
