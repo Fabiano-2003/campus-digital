@@ -10,6 +10,7 @@ import {
   MessageCircle,
   X,
   ChevronRight,
+  Building,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -25,6 +26,7 @@ const menuItems = [
   { icon: Users, label: "Grupos", href: "/groups" },
   { icon: MessageCircle, label: "Chat", href: "/chat" },
   { icon: FileText, label: "Documentos", href: "/documents" },
+  { icon: Building, label: "Instituições", href: "/institutions" },
   { icon: User, label: "Perfil", href: "/profile" },
 ];
 

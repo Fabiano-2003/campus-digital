@@ -11,9 +11,10 @@ import { SearchBar } from "@/components/dashboard/SearchBar";
 import { Navbar } from "@/components/layout/Navbar";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Bell, BookOpen, Users, FileText, User, Home, MessageCircle, Play } from "lucide-react";
+import { Bell, BookOpen, Users, FileText, User, Home, MessageCircle, Play, Building } from "lucide-react";
 import Chat from "@/pages/Chat";
 import Documents from "@/pages/Documents";
+import Institutions from "@/pages/Institutions";
 import { DocumentsFeed } from "@/components/feeds/DocumentsFeed";
 import { VideosFeed } from "@/components/feeds/VideosFeed";
 
@@ -63,7 +64,7 @@ const Dashboard = () => {
 
             {/* Main Navigation Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-9 mb-8">
+              <TabsList className="grid w-full grid-cols-10 mb-8">
                 <TabsTrigger value="overview" className="flex items-center gap-2">
                   <Home className="h-4 w-4" />
                   Início
@@ -91,6 +92,10 @@ const Dashboard = () => {
                 <TabsTrigger value="videos-feed" className="flex items-center gap-2">
                   <Play className="h-4 w-4" />
                   Feed Vídeos
+                </TabsTrigger>
+                <TabsTrigger value="institutions" className="flex items-center gap-2">
+                  <Building className="h-4 w-4" />
+                  Instituições
                 </TabsTrigger>
                 <TabsTrigger value="profile" className="flex items-center gap-2">
                   <User className="h-4 w-4" />
@@ -130,6 +135,10 @@ const Dashboard = () => {
 
               <TabsContent value="videos-feed">
                 <VideosFeed />
+              </TabsContent>
+
+              <TabsContent value="institutions">
+                <Institutions />
               </TabsContent>
 
               <TabsContent value="profile">

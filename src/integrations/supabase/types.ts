@@ -255,6 +255,138 @@ export type Database = {
           },
         ]
       }
+      institution_reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          institution_id: string
+          is_verified: boolean | null
+          rating: number
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          institution_id: string
+          is_verified?: boolean | null
+          rating: number
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          institution_id?: string
+          is_verified?: boolean | null
+          rating?: number
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      institutions: {
+        Row: {
+          accreditation: string[] | null
+          address: string | null
+          city: string
+          country: string
+          cover_image_url: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          email: string | null
+          established_year: number | null
+          facilities: string[] | null
+          faculty_count: number | null
+          id: string
+          institution_type: string
+          is_active: boolean | null
+          is_verified: boolean | null
+          logo_url: string | null
+          metadata: Json | null
+          name: string
+          phone: string | null
+          postal_code: string | null
+          programs: string[] | null
+          rating: number | null
+          reviews_count: number | null
+          social_media: Json | null
+          state: string
+          student_count: number | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          accreditation?: string[] | null
+          address?: string | null
+          city: string
+          country?: string
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          email?: string | null
+          established_year?: number | null
+          facilities?: string[] | null
+          faculty_count?: number | null
+          id?: string
+          institution_type?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          logo_url?: string | null
+          metadata?: Json | null
+          name: string
+          phone?: string | null
+          postal_code?: string | null
+          programs?: string[] | null
+          rating?: number | null
+          reviews_count?: number | null
+          social_media?: Json | null
+          state: string
+          student_count?: number | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          accreditation?: string[] | null
+          address?: string | null
+          city?: string
+          country?: string
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          email?: string | null
+          established_year?: number | null
+          facilities?: string[] | null
+          faculty_count?: number | null
+          id?: string
+          institution_type?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          logo_url?: string | null
+          metadata?: Json | null
+          name?: string
+          phone?: string | null
+          postal_code?: string | null
+          programs?: string[] | null
+          rating?: number | null
+          reviews_count?: number | null
+          social_media?: Json | null
+          state?: string
+          student_count?: number | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       monographs: {
         Row: {
           abstract: string | null
