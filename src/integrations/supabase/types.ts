@@ -60,6 +60,7 @@ export type Database = {
           title: string
           updated_at: string
           uploaded_by: string | null
+          visibility: string | null
         }
         Insert: {
           author: string
@@ -76,6 +77,7 @@ export type Database = {
           title: string
           updated_at?: string
           uploaded_by?: string | null
+          visibility?: string | null
         }
         Update: {
           author?: string
@@ -92,6 +94,7 @@ export type Database = {
           title?: string
           updated_at?: string
           uploaded_by?: string | null
+          visibility?: string | null
         }
         Relationships: []
       }
@@ -130,6 +133,7 @@ export type Database = {
           post_type: string | null
           updated_at: string
           user_id: string | null
+          visibility: string | null
         }
         Insert: {
           comments_count?: number | null
@@ -141,6 +145,7 @@ export type Database = {
           post_type?: string | null
           updated_at?: string
           user_id?: string | null
+          visibility?: string | null
         }
         Update: {
           comments_count?: number | null
@@ -152,6 +157,7 @@ export type Database = {
           post_type?: string | null
           updated_at?: string
           user_id?: string | null
+          visibility?: string | null
         }
         Relationships: []
       }
@@ -404,6 +410,7 @@ export type Database = {
           updated_at: string
           uploaded_by: string | null
           views: number | null
+          visibility: string | null
         }
         Insert: {
           abstract?: string | null
@@ -421,6 +428,7 @@ export type Database = {
           updated_at?: string
           uploaded_by?: string | null
           views?: number | null
+          visibility?: string | null
         }
         Update: {
           abstract?: string | null
@@ -438,6 +446,7 @@ export type Database = {
           updated_at?: string
           uploaded_by?: string | null
           views?: number | null
+          visibility?: string | null
         }
         Relationships: []
       }
@@ -723,6 +732,7 @@ export type Database = {
           uploaded_by: string | null
           video_url: string
           views: number | null
+          visibility: string | null
         }
         Insert: {
           category?: string
@@ -741,6 +751,7 @@ export type Database = {
           uploaded_by?: string | null
           video_url: string
           views?: number | null
+          visibility?: string | null
         }
         Update: {
           category?: string
@@ -759,6 +770,7 @@ export type Database = {
           uploaded_by?: string | null
           video_url?: string
           views?: number | null
+          visibility?: string | null
         }
         Relationships: []
       }

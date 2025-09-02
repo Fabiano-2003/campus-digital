@@ -7,13 +7,15 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Heart, MessageCircle, Share2, Send } from "lucide-react";
+import { Heart, MessageCircle, Share2, Send, Globe, Users, Lock, Building } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
 
 export function AcademicFeed() {
   const [newPost, setNewPost] = useState("");
+  const [postVisibility, setPostVisibility] = useState("public");
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
@@ -38,13 +40,14 @@ export function AcademicFeed() {
 
   // Criar novo post
   const createPostMutation = useMutation({
-    mutationFn: async (content: string) => {
+    mutationFn: async ({ content, visibility }: { content: string; visibility: string }) => {
       const { data, error } = await supabase
         .from('feed_posts')
         .insert({
           content,
           user_id: user?.id,
-          post_type: 'text'
+          post_type: 'text',
+          visibility
         })
         .select()
         .single();
@@ -82,7 +85,7 @@ export function AcademicFeed() {
 
   const handleCreatePost = () => {
     if (!newPost.trim()) return;
-    createPostMutation.mutate(newPost);
+    createPostMutation.mutate({ content: newPost, visibility: postVisibility });
   };
 
   const handleLike = (postId: string) => {
@@ -127,8 +130,39 @@ export function AcademicFeed() {
                 className="min-h-[100px] resize-none"
               />
               <div className="flex justify-between items-center">
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-center">
                   <Badge variant="outline">Texto</Badge>
+                  <Select value={postVisibility} onValueChange={setPostVisibility}>
+                    <SelectTrigger className="w-40">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="public">
+                        <div className="flex items-center gap-2">
+                          <Globe className="h-4 w-4" />
+                          Público
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="friends">
+                        <div className="flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          Amigos
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="groups">
+                        <div className="flex items-center gap-2">
+                          <Lock className="h-4 w-4" />
+                          Grupos
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="institution">
+                        <div className="flex items-center gap-2">
+                          <Building className="h-4 w-4" />
+                          Instituição
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <Button 
                   onClick={handleCreatePost}
