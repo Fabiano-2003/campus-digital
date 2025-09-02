@@ -40,7 +40,7 @@ export function SearchBar() {
             <SelectValue placeholder="Instituição" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Todas</SelectItem>
+            <SelectItem value="all">Todas</SelectItem>
             <SelectItem value="usp">USP</SelectItem>
             <SelectItem value="unicamp">UNICAMP</SelectItem>
             <SelectItem value="ufrj">UFRJ</SelectItem>
