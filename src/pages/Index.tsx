@@ -5,6 +5,7 @@ import { LandingLayout } from "@/components/layout/LandingLayout";
 import { HeroSection } from "@/components/home/HeroSection";
 import { PublicFeed } from "@/components/home/PublicFeed";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const { user, loading } = useAuth();

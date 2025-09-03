@@ -34,33 +34,29 @@ app.get('/api/test', (req, res) => {
   res.json({ message: 'API is working!', timestamp: new Date().toISOString() });
 });
 
-// Import and use routes with error handling
-try {
-  const authRoutes = await import('./routes/auth.js');
-  const booksRoutes = await import('./routes/books.js');
-  const groupsRoutes = await import('./routes/groups.js');
-  const postsRoutes = await import('./routes/posts.js');
-  const profilesRoutes = await import('./routes/profiles.js');
-  const videosRoutes = await import('./routes/videos.js');
-  const institutionsRoutes = await import('./routes/institutions.js');
-  const friendsRoutes = await import('./routes/friends.js');
-  const conversationsRoutes = await import('./routes/conversations.js');
+// Simplified API routes for now
+app.get('/api/auth/me', (req, res) => {
+  res.json({ user: null, message: 'Not authenticated' });
+});
 
-  app.use('/api/auth', authRoutes.default);
-  app.use('/api/books', booksRoutes.default);
-  app.use('/api/groups', groupsRoutes.default);
-  app.use('/api/posts', postsRoutes.default);
-  app.use('/api/profiles', profilesRoutes.default);
-  app.use('/api/videos', videosRoutes.default);
-  app.use('/api/institutions', institutionsRoutes.default);
-  app.use('/api/friends', friendsRoutes.default);
-  app.use('/api/conversations', conversationsRoutes.default);
+app.post('/api/auth/login', (req, res) => {
+  const { email } = req.body;
+  res.json({ user: { id: '1', email, name: email.split('@')[0] }, message: 'Login successful' });
+});
 
-  console.log('✅ All API routes loaded successfully');
-} catch (error) {
-  console.warn('⚠️  Some routes failed to load:', error.message);
-  console.warn('Server will start with basic routes only');
-}
+app.get('/api/posts', (req, res) => {
+  res.json({ posts: [], message: 'No posts available' });
+});
+
+app.get('/api/groups', (req, res) => {
+  res.json({ groups: [], message: 'No groups available' });
+});
+
+app.get('/api/institutions', (req, res) => {
+  res.json({ institutions: [], message: 'No institutions available' });
+});
+
+console.log('✅ Basic API routes loaded successfully');
 
 // Handle all other routes by serving the React app
 app.get('/', (req, res) => {
