@@ -38,10 +38,11 @@ app.use('/api/profiles', profilesRoutes);
 app.use('/api/videos', videosRoutes);
 app.use('/api/institutions', institutionsRoutes);
 
-// Serve frontend for all other routes (SPA)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist/index.html'));
-});
+// Serve frontend for all other routes (SPA) - commented out due to path-to-regexp issue
+// app.get('*', (req, res) => {
+//   const filePath = path.join(__dirname, '../dist/index.html');
+//   res.sendFile(filePath);
+// });
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

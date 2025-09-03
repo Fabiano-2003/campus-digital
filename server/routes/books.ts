@@ -1,7 +1,7 @@
 import express from 'express';
 import { db } from '../db';
 import { books } from '../../shared/schema';
-import { desc, eq, like, and } from 'drizzle-orm';
+import { desc, eq, like, and, SQL } from 'drizzle-orm';
 
 const router = express.Router();
 
@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
     const { category, search, institution } = req.query;
     
     // Build where conditions
-    const conditions = [];
+    const conditions: SQL<unknown>[] = [];
     if (category) {
       conditions.push(eq(books.category, category as string));
     }
