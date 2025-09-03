@@ -1,15 +1,15 @@
-modules = ["nodejs-20", "web", "postgresql-16"]
+modules = ["nodejs-20", "web"]
 
 [nix]
 channel = "stable-25_05"
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["npm", "run", "start"]
+run = ["tsx", "server/index.ts"]
 build = ["npm", "run", "build"]
 
 [workflows]
-runButton = "Dev Server"
+runButton = "Project"
 
 [[workflows.workflow]]
 name = "Project"
@@ -19,6 +19,10 @@ author = "agent"
 [[workflows.workflow.tasks]]
 task = "workflow.run"
 args = "Start application"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "SaberAngola App"
 
 [[workflows.workflow]]
 name = "Start application"
@@ -80,16 +84,24 @@ args = "echo \"🎨 Iniciando frontend...\""
 task = "shell.exec"
 args = "npm run dev"
 
+[[workflows.workflow]]
+name = "SaberAngola App"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
 [[ports]]
 localPort = 3001
 externalPort = 3001
 
 [[ports]]
 localPort = 5000
-externalPort = 5000
-
-[[ports]]
-localPort = 8080
 externalPort = 80
 
 [[ports]]
@@ -105,3 +117,4 @@ localPort = 8083
 externalPort = 3002
 
 [agent]
+expertMode = true

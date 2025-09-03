@@ -7,11 +7,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = parseInt(process.env.PORT || '5000', 10);
+const PORT = parseInt(process.env.PORT || '3001', 10);
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:8080', 'http://0.0.0.0:8080', 'http://localhost:8081', 'http://0.0.0.0:8081', 'http://localhost:8082', 'http://0.0.0.0:8082', 'http://localhost:8083', 'http://0.0.0.0:8083'],
+  origin: true, // Allow all origins for Replit environment
   credentials: true
 }));
 app.use(express.json());
@@ -62,13 +62,8 @@ try {
   console.warn('Server will start with basic routes only');
 }
 
-// Catch-all handler for frontend routes
-app.get('*', (req, res, next) => {
-  // Skip API routes
-  if (req.path.startsWith('/api/')) {
-    return next();
-  }
-
+// Handle all other routes by serving the React app
+app.get('/', (req, res) => {
   const filePath = path.join(__dirname, '../dist/index.html');
   res.sendFile(filePath, (err) => {
     if (err) {
@@ -78,6 +73,11 @@ app.get('*', (req, res, next) => {
   });
 });
 
+// 404 handler for API routes
+app.use('/api', (req, res) => {
+  res.status(404).json({ error: 'API endpoint not found' });
+});
+
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('Server Error:', err);
@@ -85,11 +85,6 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
     error: 'Internal server error',
     message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
   });
-});
-
-// 404 handler for API routes
-app.use('/api/*', (req, res) => {
-  res.status(404).json({ error: 'API endpoint not found' });
 });
 
 const server = app.listen(PORT, '0.0.0.0', () => {
