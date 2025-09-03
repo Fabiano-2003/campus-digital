@@ -16,6 +16,8 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 // Enhanced CORS configuration
 app.use(cors({
   origin: [
+    'http://localhost:5000',
+    'http://0.0.0.0:5000',
     'http://localhost:8080',
     'http://0.0.0.0:8080',
     'https://*.replit.dev',
