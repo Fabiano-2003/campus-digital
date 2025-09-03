@@ -75,36 +75,3 @@ router.get('/:id/messages', async (req, res) => {
 });
 
 export default router;
-import express from 'express';
-import { db } from '../db';
-import { study_groups, group_members, group_messages } from '../../shared/schema';
-import { desc, eq } from 'drizzle-orm';
-
-const router = express.Router();
-
-// Get all groups
-router.get('/', async (req, res) => {
-  try {
-    const groups = await db.select().from(study_groups).orderBy(desc(study_groups.created_at));
-    res.json(groups);
-  } catch (error) {
-    console.error('Error fetching groups:', error);
-    res.status(500).json({ error: 'Failed to fetch groups' });
-  }
-});
-
-// Get group by ID
-router.get('/:id', async (req, res) => {
-  try {
-    const group = await db.select().from(study_groups).where(eq(study_groups.id, req.params.id)).limit(1);
-    if (group.length === 0) {
-      return res.status(404).json({ error: 'Group not found' });
-    }
-    res.json(group[0]);
-  } catch (error) {
-    console.error('Error fetching group:', error);
-    res.status(500).json({ error: 'Failed to fetch group' });
-  }
-});
-
-export default router;

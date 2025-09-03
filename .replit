@@ -43,8 +43,16 @@ task = "shell.exec"
 args = "tsx server/index.ts"
 
 [[ports]]
+localPort = 3001
+externalPort = 3001
+
+[[ports]]
 localPort = 8080
 externalPort = 80
+
+[[ports]]
+localPort = 8081
+externalPort = 8081
 
 [agent]
 integrations = ["javascript_database==1.0.0"]

@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { db } from './db';
 import authRoutes from './routes/auth';
 import booksRoutes from './routes/books';
@@ -9,12 +11,18 @@ import profilesRoutes from './routes/profiles';
 import videosRoutes from './routes/videos';
 import institutionsRoutes from './routes/institutions';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = parseInt(process.env.PORT || '5000', 10);
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve static files from dist directory (built frontend)
+app.use(express.static(path.join(__dirname, '../dist')));
 
 // Health check
 app.get('/health', (req, res) => {
@@ -29,6 +37,11 @@ app.use('/api/posts', postsRoutes);
 app.use('/api/profiles', profilesRoutes);
 app.use('/api/videos', videosRoutes);
 app.use('/api/institutions', institutionsRoutes);
+
+// Serve frontend for all other routes (SPA)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
+});
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

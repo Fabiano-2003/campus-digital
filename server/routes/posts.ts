@@ -1,7 +1,7 @@
 import express from 'express';
 import { db } from '../db';
 import { feedPosts, postLikes, postComments } from '../../shared/schema';
-import { desc, eq } from 'drizzle-orm';
+import { desc, eq, and } from 'drizzle-orm';
 
 const router = express.Router();
 
@@ -49,13 +49,13 @@ router.post('/:id/like', async (req, res) => {
     
     // Check if already liked
     const existingLike = await db.select().from(postLikes)
-      .where(eq(postLikes.postId, postId) && eq(postLikes.userId, userId))
+      .where(and(eq(postLikes.postId, postId), eq(postLikes.userId, userId)))
       .limit(1);
     
     if (existingLike.length > 0) {
       // Unlike
       await db.delete(postLikes)
-        .where(eq(postLikes.postId, postId) && eq(postLikes.userId, userId));
+        .where(and(eq(postLikes.postId, postId), eq(postLikes.userId, userId)));
       res.json({ liked: false });
     } else {
       // Like
@@ -68,25 +68,6 @@ router.post('/:id/like', async (req, res) => {
   } catch (error) {
     console.error('Like post error:', error);
     res.status(500).json({ error: 'Failed to like post' });
-  }
-});
-
-export default router;
-import express from 'express';
-import { db } from '../db';
-import { feed_posts, post_likes, post_comments } from '../../shared/schema';
-import { desc, eq } from 'drizzle-orm';
-
-const router = express.Router();
-
-// Get all posts
-router.get('/', async (req, res) => {
-  try {
-    const posts = await db.select().from(feed_posts).orderBy(desc(feed_posts.created_at));
-    res.json(posts);
-  } catch (error) {
-    console.error('Error fetching posts:', error);
-    res.status(500).json({ error: 'Failed to fetch posts' });
   }
 });
 

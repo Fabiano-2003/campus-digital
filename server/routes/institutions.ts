@@ -56,22 +56,3 @@ router.post('/', async (req, res) => {
 });
 
 export default router;
-import express from 'express';
-import { db } from '../db';
-import { institutions } from '../../shared/schema';
-import { desc, eq } from 'drizzle-orm';
-
-const router = express.Router();
-
-// Get all institutions
-router.get('/', async (req, res) => {
-  try {
-    const allInstitutions = await db.select().from(institutions).orderBy(desc(institutions.created_at));
-    res.json(allInstitutions);
-  } catch (error) {
-    console.error('Error fetching institutions:', error);
-    res.status(500).json({ error: 'Failed to fetch institutions' });
-  }
-});
-
-export default router;
