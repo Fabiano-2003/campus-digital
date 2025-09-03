@@ -43,7 +43,8 @@ try {
   const profilesRoutes = await import('./routes/profiles.js');
   const videosRoutes = await import('./routes/videos.js');
   const institutionsRoutes = await import('./routes/institutions.js');
-  const friendsRoutes = await import('./routes/friends');
+  const friendsRoutes = await import('./routes/friends.js');
+  const conversationsRoutes = await import('./routes/conversations.js');
 
   app.use('/api/auth', authRoutes.default);
   app.use('/api/books', booksRoutes.default);
@@ -52,7 +53,8 @@ try {
   app.use('/api/profiles', profilesRoutes.default);
   app.use('/api/videos', videosRoutes.default);
   app.use('/api/institutions', institutionsRoutes.default);
-  app.use('/api/friends', friendsRoutes);
+  app.use('/api/friends', friendsRoutes.default);
+  app.use('/api/conversations', conversationsRoutes.default);
 
   console.log('✅ All API routes loaded successfully');
 } catch (error) {

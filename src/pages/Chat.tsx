@@ -82,18 +82,9 @@ export default function Chat() {
     try {
       if (!user) return;
 
-      // Criar ou buscar conversa existente
-      const { data: conversation, error } = await supabase
-        .from('conversations')
-        .upsert({
-          participant_1: user.id < userId ? user.id : userId,
-          participant_2: user.id < userId ? userId : user.id
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-
+      // Criar ou buscar conversa existente usando API
+      const conversation = await apiClient.createConversation(userId, user.id);
+      
       setSelectedConversation(conversation.id);
       loadMessages(conversation.id);
     } catch (error) {
@@ -108,13 +99,9 @@ export default function Chat() {
 
   const loadMessages = async (conversationId: string) => {
     try {
-      const { data, error } = await supabase
-        .from('private_messages')
-        .select('*')
-        .eq('conversation_id', conversationId)
-        .order('created_at', { ascending: true });
-
-      if (error) throw error;
+      if (!user) return;
+      
+      const data = await apiClient.getConversationMessages(conversationId, user.id);
       setMessages(data || []);
     } catch (error) {
       console.error('Error loading messages:', error);
@@ -122,21 +109,10 @@ export default function Chat() {
   };
 
   const sendMessage = async () => {
-    if (!newMessage.trim() || !selectedConversation) return;
+    if (!newMessage.trim() || !selectedConversation || !user) return;
 
     try {
-      if (!user) return;
-
-      const { error } = await supabase
-        .from('private_messages')
-        .insert([{
-          conversation_id: selectedConversation,
-          sender_id: user.id,
-          content: newMessage.trim()
-        }]);
-
-      if (error) throw error;
-
+      await apiClient.sendMessage(selectedConversation, newMessage.trim(), user.id);
       setNewMessage("");
     } catch (error) {
       console.error('Error sending message:', error);

@@ -201,6 +201,40 @@ export class ApiClient {
       headers: { 'x-user-id': userId },
     });
   }
+
+  // Conversations endpoints
+  async createConversation(participantId: string, userId: string) {
+    return this.makeRequest('/conversations/create', {
+      method: 'POST',
+      headers: { 'x-user-id': userId },
+      body: JSON.stringify({ participantId }),
+    });
+  }
+
+  async getConversations(userId: string) {
+    return this.makeRequest('/conversations', {
+      headers: { 'x-user-id': userId },
+    });
+  }
+
+  async getConversationMessages(conversationId: string, userId: string, limit?: number, offset?: number) {
+    const params = new URLSearchParams();
+    if (limit) params.set('limit', limit.toString());
+    if (offset) params.set('offset', offset.toString());
+    
+    const query = params.toString() ? `?${params.toString()}` : '';
+    return this.makeRequest(`/conversations/${conversationId}/messages${query}`, {
+      headers: { 'x-user-id': userId },
+    });
+  }
+
+  async sendMessage(conversationId: string, content: string, userId: string, messageType = 'text') {
+    return this.makeRequest(`/conversations/${conversationId}/messages`, {
+      method: 'POST',
+      headers: { 'x-user-id': userId },
+      body: JSON.stringify({ content, message_type: messageType }),
+    });
+  }
 }
 
 export const apiClient = new ApiClient();

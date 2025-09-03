@@ -11,12 +11,18 @@ CREATE TABLE IF NOT EXISTS friendships (
 );
 
 -- Add indexes
-CREATE INDEX idx_friendships_requester ON friendships(requester_id);
-CREATE INDEX idx_friendships_addressee ON friendships(addressee_id);
-CREATE INDEX idx_friendships_status ON friendships(status);
+CREATE INDEX IF NOT EXISTS idx_friendships_requester ON friendships(requester_id);
+CREATE INDEX IF NOT EXISTS idx_friendships_addressee ON friendships(addressee_id);
+CREATE INDEX IF NOT EXISTS idx_friendships_status ON friendships(status);
 
 -- Add RLS policies
 ALTER TABLE friendships ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Users can view their friendships" ON friendships;
+DROP POLICY IF EXISTS "Users can create friendship requests" ON friendships;
+DROP POLICY IF EXISTS "Users can update their friendship requests" ON friendships;
+DROP POLICY IF EXISTS "Users can delete friendship requests" ON friendships;
 
 -- Users can see their own friendship requests
 CREATE POLICY "Users can view their friendships" ON friendships
@@ -43,6 +49,7 @@ FOR DELETE USING (
 );
 
 -- Add trigger for updated_at
+DROP TRIGGER IF EXISTS update_friendships_updated_at ON friendships;
 CREATE TRIGGER update_friendships_updated_at
     BEFORE UPDATE ON friendships
     FOR EACH ROW
@@ -59,11 +66,14 @@ CREATE TABLE IF NOT EXISTS conversations (
 );
 
 -- Add indexes
-CREATE INDEX idx_conversations_participant_1 ON conversations(participant_1);
-CREATE INDEX idx_conversations_participant_2 ON conversations(participant_2);
+CREATE INDEX IF NOT EXISTS idx_conversations_participant_1 ON conversations(participant_1);
+CREATE INDEX IF NOT EXISTS idx_conversations_participant_2 ON conversations(participant_2);
 
 -- Add RLS policies
 ALTER TABLE conversations ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Users can view their conversations" ON conversations;
+DROP POLICY IF EXISTS "Users can create conversations" ON conversations;
 
 CREATE POLICY "Users can view their conversations" ON conversations
 FOR SELECT USING (
@@ -76,6 +86,7 @@ FOR INSERT WITH CHECK (
 );
 
 -- Add trigger for updated_at
+DROP TRIGGER IF EXISTS update_conversations_updated_at ON conversations;
 CREATE TRIGGER update_conversations_updated_at
     BEFORE UPDATE ON conversations
     FOR EACH ROW
@@ -87,17 +98,21 @@ CREATE TABLE IF NOT EXISTS private_messages (
   conversation_id UUID NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
   sender_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   content TEXT NOT NULL,
+  message_type TEXT DEFAULT 'text',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   read_at TIMESTAMP WITH TIME ZONE
 );
 
 -- Add indexes
-CREATE INDEX idx_private_messages_conversation ON private_messages(conversation_id);
-CREATE INDEX idx_private_messages_sender ON private_messages(sender_id);
-CREATE INDEX idx_private_messages_created_at ON private_messages(created_at);
+CREATE INDEX IF NOT EXISTS idx_private_messages_conversation ON private_messages(conversation_id);
+CREATE INDEX IF NOT EXISTS idx_private_messages_sender ON private_messages(sender_id);
+CREATE INDEX IF NOT EXISTS idx_private_messages_created_at ON private_messages(created_at);
 
 -- Add RLS policies
 ALTER TABLE private_messages ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Users can view messages in their conversations" ON private_messages;
+DROP POLICY IF EXISTS "Users can send messages in their conversations" ON private_messages;
 
 CREATE POLICY "Users can view messages in their conversations" ON private_messages
 FOR SELECT USING (
