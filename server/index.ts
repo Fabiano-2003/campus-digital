@@ -51,7 +51,8 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on http://0.0.0.0:${PORT}`);
+  console.log(`API available at http://0.0.0.0:${PORT}/api`);
 });
 
 export default app;

@@ -9,7 +9,7 @@ run = ["npm", "run", "start"]
 build = ["npm", "run", "build"]
 
 [workflows]
-runButton = "Full Stack Dev"
+runButton = "Start Full App"
 
 [[workflows.workflow]]
 name = "Project"
@@ -41,6 +41,19 @@ args = "npm run dev"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "tsx server/index.ts"
+
+[[workflows.workflow]]
+name = "Start Full App"
+author = 47188281
+mode = "parallel"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx tsx server/index.ts"
 
 [[ports]]
 localPort = 3001

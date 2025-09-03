@@ -1,5 +1,5 @@
 // API configuration for connecting to backend
-const API_BASE_URL = import.meta.env.DEV ? 'http://localhost:5000/api' : '/api';
+const API_BASE_URL = import.meta.env.DEV ? 'http://0.0.0.0:5000/api' : '/api';
 
 export class ApiClient {
   private baseUrl: string;
