@@ -85,9 +85,13 @@ router.get('/', async (req, res) => {
         )
       `)
       .or(`participant_1.eq.${userId},participant_2.eq.${userId}`)
-      .order('updated_at', { ascending: false });
+      .order('updated_at', { ascending: false })
+      .limit(50); // Limitar para performance
 
-    if (error) throw error;
+    if (error) {
+      console.error('Database error:', error);
+      throw error;
+    }
 
     // Transform data to include the other participant's info
     const conversations = (data || []).map((conv: any) => {
@@ -95,12 +99,18 @@ router.get('/', async (req, res) => {
         ? conv.participant_2_profile 
         : conv.participant_1_profile;
       
+      // Validar se o participante existe
+      if (!otherParticipant) {
+        console.warn(`Missing participant for conversation ${conv.id}`);
+        return null;
+      }
+      
       return {
         ...conv,
         other_participant: otherParticipant,
         last_message: conv.last_message?.[0] || null
       };
-    });
+    }).filter(Boolean); // Remover conversas inválidas
 
     res.json(conversations);
   } catch (error) {

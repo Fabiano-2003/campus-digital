@@ -36,6 +36,16 @@ interface Message {
   sender_name?: string;
 }
 
+interface ConversationData {
+  id: string;
+  other_participant: User;
+  last_message?: {
+    content: string;
+    created_at: string;
+  };
+  updated_at: string;
+}
+
 export default function Chat() {
   const { toast } = useToast();
   const { user } = useAuth();
@@ -43,12 +53,21 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeTab, setActiveTab] = useState<'friends' | 'requests' | 'search'>('friends');
+  const [activeTab, setActiveTab] = useState<'conversations' | 'friends' | 'requests' | 'search'>('conversations');
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const queryClient = useQueryClient();
 
   // Get friends list
   const { data: friends, isLoading: friendsLoading } = useQuery({
     queryKey: ['friends', user?.id, searchTerm],
     queryFn: () => apiClient.getFriends(user!.id, searchTerm),
+    enabled: !!user?.id,
+  });
+
+  // Get conversations list
+  const { data: conversations, isLoading: conversationsLoading } = useQuery({
+    queryKey: ['conversations', user?.id],
+    queryFn: () => apiClient.getConversations(user!.id),
     enabled: !!user?.id,
   });
 
@@ -101,21 +120,34 @@ export default function Chat() {
     try {
       if (!user) return;
       
+      setIsLoadingMessages(true);
       const data = await apiClient.getConversationMessages(conversationId, user.id);
       setMessages(data || []);
     } catch (error) {
       console.error('Error loading messages:', error);
+      toast({
+        title: "Erro ao carregar mensagens",
+        description: "Tente novamente em alguns instantes.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoadingMessages(false);
     }
   };
 
   const sendMessage = async () => {
     if (!newMessage.trim() || !selectedConversation || !user) return;
 
+    const messageContent = newMessage.trim();
+    setNewMessage(""); // Limpar imediatamente para UX responsiva
+
     try {
-      await apiClient.sendMessage(selectedConversation, newMessage.trim(), user.id);
-      setNewMessage("");
+      await apiClient.sendMessage(selectedConversation, messageContent, user.id);
+      // Invalidar queries para atualizar lista de conversas
+      queryClient.invalidateQueries({ queryKey: ['conversations', user.id] });
     } catch (error) {
       console.error('Error sending message:', error);
+      setNewMessage(messageContent); // Restaurar mensagem em caso de erro
       toast({
         title: "Erro ao enviar mensagem",
         description: "Tente novamente em alguns instantes.",
@@ -136,37 +168,107 @@ export default function Chat() {
               <Card>
                 <CardHeader>
                   <CardTitle>Chat</CardTitle>
-                  <div className="flex gap-1">
+                  <div className="grid grid-cols-2 gap-1 mb-2">
+                    <Button
+                      variant={activeTab === 'conversations' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setActiveTab('conversations')}
+                      className="text-xs"
+                    >
+                      <MessageCircle className="h-3 w-3 mr-1" />
+                      Conversas
+                    </Button>
                     <Button
                       variant={activeTab === 'friends' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setActiveTab('friends')}
-                      className="flex-1 text-xs"
+                      className="text-xs"
                     >
-                      <MessageCircle className="h-3 w-3 mr-1" />
+                      <Users className="h-3 w-3 mr-1" />
                       Amigos
                     </Button>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1">
                     <Button
                       variant={activeTab === 'requests' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setActiveTab('requests')}
-                      className="flex-1 text-xs"
+                      className="text-xs"
                     >
-                      <Users className="h-3 w-3 mr-1" />
+                      <UserPlus className="h-3 w-3 mr-1" />
                       Pedidos
                     </Button>
                     <Button
                       variant={activeTab === 'search' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setActiveTab('search')}
-                      className="flex-1 text-xs"
+                      className="text-xs"
                     >
-                      <UserPlus className="h-3 w-3 mr-1" />
+                      <Search className="h-3 w-3 mr-1" />
                       Buscar
                     </Button>
                   </div>
                 </CardHeader>
                 <CardContent>
+                  {activeTab === 'conversations' && (
+                    <div className="max-h-96 overflow-y-auto space-y-2">
+                      {conversationsLoading ? (
+                        <div className="text-center py-4">
+                          <p className="text-muted-foreground text-sm">Carregando...</p>
+                        </div>
+                      ) : conversations && conversations.length > 0 ? (
+                        conversations.map((conversation: any) => (
+                          <div
+                            key={conversation.id}
+                            className={`p-3 rounded-lg cursor-pointer transition-colors ${
+                              selectedConversation === conversation.id
+                                ? 'bg-primary/10 border border-primary/20'
+                                : 'hover:bg-muted/50'
+                            }`}
+                            onClick={() => {
+                              setSelectedConversation(conversation.id);
+                              loadMessages(conversation.id);
+                            }}
+                          >
+                            <div className="flex items-center gap-3">
+                              <Avatar className="h-10 w-10">
+                                <AvatarFallback>
+                                  {conversation.other_participant?.full_name?.charAt(0) || 'U'}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-semibold text-sm truncate">
+                                  {conversation.other_participant?.full_name || 'Usuário'}
+                                </p>
+                                <p className="text-xs text-muted-foreground truncate">
+                                  {conversation.last_message?.content || 'Nenhuma mensagem'}
+                                </p>
+                              </div>
+                              {conversation.last_message && (
+                                <div className="text-xs text-muted-foreground">
+                                  {new Date(conversation.last_message.created_at).toLocaleDateString('pt-BR')}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-8">
+                          <MessageCircle className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                          <p className="text-muted-foreground text-sm">Nenhuma conversa ainda</p>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setActiveTab('friends')}
+                            className="mt-2"
+                          >
+                            Iniciar conversa
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {activeTab === 'friends' && (
                     <>
                       <div className="relative mb-4">
@@ -263,7 +365,12 @@ export default function Chat() {
                     <Separator />
                     <CardContent className="flex-1 flex flex-col p-0">
                       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                        {messages.length === 0 ? (
+                        {isLoadingMessages ? (
+                          <div className="text-center py-8">
+                            <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+                            <p className="text-muted-foreground text-sm">Carregando mensagens...</p>
+                          </div>
+                        ) : messages.length === 0 ? (
                           <div className="text-center py-8">
                             <MessageCircle className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                             <p className="text-muted-foreground">
