@@ -1,5 +1,18 @@
 // API configuration for connecting to backend
-const API_BASE_URL = import.meta.env.DEV ? 'http://0.0.0.0:5000/api' : '/api';
+const getApiBaseUrl = () => {
+  if (import.meta.env.DEV) {
+    // In development, try to connect to the backend server
+    const currentPort = window.location.port;
+    if (currentPort === '8080' || currentPort === '8081' || currentPort === '8082' || currentPort === '8083') {
+      // Frontend is running, backend should be on 5000
+      return 'http://0.0.0.0:5000/api';
+    }
+    return 'http://0.0.0.0:5000/api';
+  }
+  return '/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 export class ApiClient {
   private baseUrl: string;
