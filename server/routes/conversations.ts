@@ -1,4 +1,3 @@
-
 import express from 'express';
 import { createClient } from '@supabase/supabase-js';
 
@@ -23,15 +22,18 @@ router.post('/create', async (req, res) => {
       return res.status(400).json({ error: 'Cannot create conversation with yourself' });
     }
 
-    // Check if conversation already exists
-    const { data: existingConversation } = await supabase
+    // Check if conversation already exists between these users
+    const { data: existingConversations, error: fetchError } = await supabase
       .from('conversations')
       .select('*')
-      .or(`and(participant_1.eq.${userId},participant_2.eq.${participantId}),and(participant_1.eq.${participantId},participant_2.eq.${userId})`)
-      .single();
+      .or(`and(participant_1.eq.${userId},participant_2.eq.${participantId}),and(participant_1.eq.${participantId},participant_2.eq.${userId})`);
 
-    if (existingConversation) {
-      return res.json(existingConversation);
+    if (fetchError) {
+      throw fetchError;
+    }
+
+    if (existingConversations && existingConversations.length > 0) {
+      return res.json(existingConversations[0]);
     }
 
     // Create new conversation
@@ -95,16 +97,16 @@ router.get('/', async (req, res) => {
 
     // Transform data to include the other participant's info
     const conversations = (data || []).map((conv: any) => {
-      const otherParticipant = conv.participant_1 === userId 
-        ? conv.participant_2_profile 
+      const otherParticipant = conv.participant_1 === userId
+        ? conv.participant_2_profile
         : conv.participant_1_profile;
-      
+
       // Validar se o participante existe
       if (!otherParticipant) {
         console.warn(`Missing participant for conversation ${conv.id}`);
         return null;
       }
-      
+
       return {
         ...conv,
         other_participant: otherParticipant,

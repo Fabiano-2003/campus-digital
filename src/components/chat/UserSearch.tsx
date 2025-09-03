@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Search, UserPlus, Clock, Check } from 'lucide-react';
-import { toast } from 'sonner';
+import { useToast } from '@/components/ui/use-toast';
 
 interface SearchUser {
   id: string;
@@ -23,6 +23,7 @@ interface SearchUser {
 
 export function UserSearch() {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const queryClient = useQueryClient();
 
@@ -37,10 +38,17 @@ export function UserSearch() {
       apiClient.sendFriendRequest(targetUserId, user!.id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['searchUsers'] });
-      toast.success('Pedido de amizade enviado!');
+      toast({
+        title: "Sucesso",
+        description: "Pedido de amizade enviado!",
+      });
     },
     onError: () => {
-      toast.error('Erro ao enviar pedido de amizade');
+      toast({
+        title: "Erro",
+        description: "Erro ao enviar pedido de amizade",
+        variant: "destructive",
+      });
     },
   });
 

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Check, X, UserPlus } from 'lucide-react';
-import { toast } from 'sonner';
+import { useToast } from '@/components/ui/use-toast';
 
 interface FriendRequest {
   id: string;
@@ -25,6 +25,7 @@ interface FriendRequest {
 
 export function FriendRequests() {
   const { user } = useAuth();
+  const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const { data: requests, isLoading } = useQuery({
@@ -39,10 +40,17 @@ export function FriendRequests() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['friendRequests'] });
       queryClient.invalidateQueries({ queryKey: ['friends'] });
-      toast.success('Pedido de amizade aceito!');
+      toast({
+        title: "Sucesso",
+        description: "Pedido de amizade aceito!",
+      });
     },
     onError: () => {
-      toast.error('Erro ao aceitar pedido de amizade');
+      toast({
+        title: "Erro",
+        description: "Erro ao aceitar pedido de amizade",
+        variant: "destructive",
+      });
     },
   });
 
@@ -51,10 +59,17 @@ export function FriendRequests() {
       apiClient.rejectFriendRequest(friendshipId, user!.id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['friendRequests'] });
-      toast.success('Pedido de amizade rejeitado');
+      toast({
+        title: "Sucesso",
+        description: "Pedido de amizade rejeitado",
+      });
     },
     onError: () => {
-      toast.error('Erro ao rejeitar pedido de amizade');
+      toast({
+        title: "Erro",
+        description: "Erro ao rejeitar pedido de amizade",
+        variant: "destructive",
+      });
     },
   });
 

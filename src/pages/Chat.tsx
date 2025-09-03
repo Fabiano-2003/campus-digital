@@ -106,6 +106,12 @@ export default function Chat() {
       
       setSelectedConversation(conversation.id);
       loadMessages(conversation.id);
+      
+      // Invalidar queries para atualizar lista de conversas
+      queryClient.invalidateQueries({ queryKey: ['conversations', user.id] });
+      
+      // Mudar para a aba de conversas para mostrar a nova conversa
+      setActiveTab('conversations');
     } catch (error) {
       console.error('Error starting conversation:', error);
       toast({
@@ -156,7 +162,8 @@ export default function Chat() {
     }
   };
 
-  const selectedFriend = friends?.find((f: any) => f.id === selectedConversation);
+  // Get the selected conversation data
+  const selectedConversationData = conversations?.find((c: any) => c.id === selectedConversation);
 
   return (
     <AppLayout>
@@ -350,16 +357,16 @@ export default function Chat() {
             {/* Chat Area */}
             <div className="lg:w-2/3">
               <Card className="h-full flex flex-col">
-                {selectedConversation && selectedFriend ? (
+                {selectedConversation && selectedConversationData ? (
                   <>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-3">
                         <Avatar className="h-8 w-8">
                           <AvatarFallback>
-                            {selectedFriend.full_name?.charAt(0) || 'U'}
+                            {selectedConversationData.other_participant?.full_name?.charAt(0) || 'U'}
                           </AvatarFallback>
                         </Avatar>
-                        <span>{selectedFriend.full_name || 'Usuário'}</span>
+                        <span>{selectedConversationData.other_participant?.full_name || 'Usuário'}</span>
                       </CardTitle>
                     </CardHeader>
                     <Separator />
