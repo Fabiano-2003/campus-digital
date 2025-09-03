@@ -16,6 +16,8 @@ import Documents from "@/pages/Documents";
 import Institutions from "@/pages/Institutions";
 import { DocumentsFeed } from "@/components/feeds/DocumentsFeed";
 import { VideosFeed } from "@/components/feeds/VideosFeed";
+import { PlaylistsSection } from "@/components/dashboard/PlaylistsSection";
+import { StudyArea } from "@/components/dashboard/StudyArea";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -48,6 +50,14 @@ const Dashboard = () => {
               <TabsTrigger value="library" className="flex items-center gap-2">
                 <BookOpen className="h-4 w-4" />
                 Biblioteca
+              </TabsTrigger>
+              <TabsTrigger value="playlists" className="flex items-center gap-2">
+                <Play className="h-4 w-4" />
+                Playlists
+              </TabsTrigger>
+              <TabsTrigger value="study" className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4" />
+                Estudo
               </TabsTrigger>
               <TabsTrigger value="groups" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
@@ -91,6 +101,14 @@ const Dashboard = () => {
 
             <TabsContent value="library">
               <LibrarySection />
+            </TabsContent>
+
+            <TabsContent value="playlists">
+              <PlaylistsSection />
+            </TabsContent>
+
+            <TabsContent value="study">
+              <StudyArea />
             </TabsContent>
 
             <TabsContent value="groups">

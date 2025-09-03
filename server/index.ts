@@ -1,4 +1,3 @@
-
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
@@ -55,8 +54,8 @@ app.get('/health', (req, res) => {
 
 // Enhanced API test route
 app.get('/api/test', (req, res) => {
-  res.json({ 
-    message: 'SaberAngola API is working!', 
+  res.json({
+    message: 'SaberAngola API is working!',
     timestamp: new Date().toISOString(),
     server: 'Express.js',
     status: 'healthy'
@@ -68,14 +67,14 @@ app.get('/api/auth/me', (req, res) => {
   // Simulate checking token
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith('Bearer ')) {
-    res.json({ 
-      user: { 
-        id: '1', 
-        email: 'demo@saberangola.ao', 
+    res.json({
+      user: {
+        id: '1',
+        email: 'demo@saberangola.ao',
         name: 'Demo User',
         institution: 'Universidade de Angola'
-      }, 
-      message: 'Authenticated' 
+      },
+      message: 'Authenticated'
     });
   } else {
     res.status(401).json({ user: null, message: 'Not authenticated' });
@@ -84,44 +83,44 @@ app.get('/api/auth/me', (req, res) => {
 
 app.post('/api/auth/login', (req, res) => {
   const { email, password } = req.body;
-  
+
   if (!email || !password) {
     return res.status(400).json({ error: 'Email e password são obrigatórios' });
   }
-  
+
   // Mock successful login
-  res.json({ 
-    user: { 
-      id: '1', 
-      email, 
+  res.json({
+    user: {
+      id: '1',
+      email,
       name: email.split('@')[0],
       institution: 'Universidade de Angola'
-    }, 
+    },
     token: 'mock_jwt_token_' + Date.now(),
-    message: 'Login realizado com sucesso' 
+    message: 'Login realizado com sucesso'
   });
 });
 
 app.post('/api/auth/register', (req, res) => {
   const { email, password, name, institution } = req.body;
-  
+
   if (!email || !password || !name) {
     return res.status(400).json({ error: 'Todos os campos são obrigatórios' });
   }
-  
-  res.json({ 
-    user: { 
-      id: Date.now().toString(), 
-      email, 
+
+  res.json({
+    user: {
+      id: Date.now().toString(),
+      email,
       name,
       institution: institution || 'Não especificada'
-    }, 
+    },
     token: 'mock_jwt_token_' + Date.now(),
-    message: 'Registo realizado com sucesso' 
+    message: 'Registo realizado com sucesso'
   });
 });
 
-// Enhanced mock data routes
+// Mock data routes
 app.get('/api/posts', (req, res) => {
   const mockPosts = [
     {
@@ -145,7 +144,7 @@ app.get('/api/posts', (req, res) => {
       comments_count: 1
     }
   ];
-  
+
   res.json({ posts: mockPosts, total: mockPosts.length });
 });
 
@@ -174,13 +173,13 @@ app.get('/api/groups', (req, res) => {
       created_at: new Date(Date.now() - 7200000).toISOString()
     }
   ];
-  
+
   res.json({ groups: mockGroups, total: mockGroups.length });
 });
 
 app.get('/api/groups/:id', (req, res) => {
   const { id } = req.params;
-  
+
   const mockGroup = {
     id,
     name: 'Programação Avançada',
@@ -222,7 +221,7 @@ app.get('/api/groups/:id', (req, res) => {
       }
     ]
   };
-  
+
   res.json(mockGroup);
 });
 
@@ -259,7 +258,7 @@ app.get('/api/institutions', (req, res) => {
       students_count: 12000
     }
   ];
-  
+
   res.json({ institutions: mockInstitutions, total: mockInstitutions.length });
 });
 
@@ -289,7 +288,7 @@ app.get('/api/books', (req, res) => {
       created_at: new Date(Date.now() - 86400000).toISOString()
     }
   ];
-  
+
   res.json({ books: mockBooks, total: mockBooks.length });
 });
 
@@ -307,13 +306,39 @@ app.get('/api/videos', (req, res) => {
       created_at: new Date().toISOString()
     }
   ];
-  
+
   res.json({ videos: mockVideos, total: mockVideos.length });
 });
 
+// Register all API routes
+// import authRouter from './routes/auth'; // Assuming auth routes are in routes/auth.ts
+// import profilesRouter from './routes/profiles'; // Assuming profiles routes are in routes/profiles.ts
+// import postsRouter from './routes/posts'; // Assuming posts routes are in routes/posts.ts
+// import groupsRouter from './routes/groups'; // Assuming groups routes are in routes/groups.ts
+// import booksRouter from './routes/books'; // Assuming books routes are in routes/books.ts
+// import videosRouter from './routes/videos'; // Assuming videos routes are in routes/videos.ts
+// import institutionsRouter from './routes/institutions'; // Assuming institutions routes are in routes/institutions.ts
+// import conversationsRouter from './routes/conversations'; // Assuming conversations routes are in routes/conversations.ts
+// import friendsRouter from './routes/friends'; // Assuming friends routes are in routes/friends.ts
+import playlistsRouter from './routes/playlists';
+import coursesRouter from './routes/courses';
+
+// Use the routes
+app.use('/api/auth', authRouter);
+app.use('/api/profiles', profilesRouter);
+app.use('/api/posts', postsRouter);
+app.use('/api/groups', groupsRouter);
+app.use('/api/books', booksRouter);
+app.use('/api/videos', videosRouter);
+app.use('/api/institutions', institutionsRouter);
+app.use('/api/conversations', conversationsRouter);
+app.use('/api/friends', friendsRouter);
+app.use('/api/playlists', playlistsRouter);
+app.use('/api/courses', coursesRouter);
+
 // Catch-all for unknown API routes
 app.use('/api', (req, res) => {
-  res.status(404).json({ 
+  res.status(404).json({
     error: 'Endpoint da API não encontrado',
     path: req.path,
     method: req.method
@@ -334,7 +359,7 @@ app.use((req, res) => {
 // Global error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('❌ Erro do servidor:', err);
-  
+
   res.status(err.status || 500).json({
     error: 'Erro interno do servidor',
     message: process.env.NODE_ENV === 'development' ? err.message : 'Algo deu errado',
@@ -359,16 +384,16 @@ const server = app.listen(PORT, '0.0.0.0', () => {
 // Enhanced error handling
 server.on('error', (error: any) => {
   console.error('❌ Falha ao iniciar servidor:', error);
-  
+
   if (error.code === 'EADDRINUSE') {
     console.error(`❌ Porta ${PORT} já está em uso!`);
     console.log('💡 Tentando usar porta alternativa...');
-    
+
     const alternativePort = PORT + 1;
     const altServer = app.listen(alternativePort, '0.0.0.0', () => {
       console.log(`🚀 Servidor iniciado na porta alternativa: ${alternativePort}`);
     });
-    
+
     altServer.on('error', (altError) => {
       console.error('❌ Falha na porta alternativa também:', altError);
       process.exit(1);
@@ -381,12 +406,12 @@ server.on('error', (error: any) => {
 // Graceful shutdown
 const gracefulShutdown = (signal: string) => {
   console.log(`\n🛑 ${signal} recebido, encerrando graciosamente...`);
-  
+
   server.close(() => {
     console.log('✅ Servidor encerrado com sucesso');
     process.exit(0);
   });
-  
+
   // Force close after 10 seconds
   setTimeout(() => {
     console.error('❌ Forçando encerramento...');

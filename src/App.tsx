@@ -9,6 +9,7 @@ import Auth from "./pages/Auth";
 import GroupDetail from "./pages/GroupDetail";
 import CreateGroup from "./pages/CreateGroup";
 import Groups from "./pages/Groups";
+import TeacherCourses from "./pages/TeacherCourses";
 import FollowPage from "./pages/FollowPage";
 import Library from "./pages/Library";
 import Documents from "./pages/Documents";
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/groups" element={<Groups />} />
           <Route path="/groups/:id" element={<GroupDetail />} />
           <Route path="/create-group" element={<CreateGroup />} />
+            <Route path="/teacher-courses" element={<TeacherCourses />} />
             <Route path="/follow" element={<FollowPage />} />
             <Route path="/chat" element={<Chat />} />
           <Route path="/library" element={<Library />} />

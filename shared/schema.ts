@@ -264,3 +264,62 @@ export const follows = pgTable('follows', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
+
+// Playlists table
+export const playlists = pgTable('playlists', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  name: text('name').notNull(),
+  description: text('description'),
+  isPublic: boolean('is_public').default(false),
+  coverUrl: text('cover_url'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+// Playlist items table
+export const playlistItems = pgTable('playlist_items', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  playlistId: uuid('playlist_id').references(() => playlists.id, { onDelete: 'cascade' }),
+  itemType: text('item_type').notNull(),
+  itemId: uuid('item_id').notNull(),
+  position: integer('position').default(0),
+  addedAt: timestamp('added_at').defaultNow(),
+});
+
+// Teacher courses table
+export const teacherCourses = pgTable('teacher_courses', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  teacherId: uuid('teacher_id').references(() => users.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  description: text('description'),
+  subject: text('subject').notNull(),
+  level: text('level').notNull(),
+  institution: text('institution'),
+  coverUrl: text('cover_url'),
+  isActive: boolean('is_active').default(true),
+  maxStudents: integer('max_students').default(50),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+// Course enrollments table
+export const courseEnrollments = pgTable('course_enrollments', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  courseId: uuid('course_id').references(() => teacherCourses.id, { onDelete: 'cascade' }),
+  studentId: uuid('student_id').references(() => users.id, { onDelete: 'cascade' }),
+  status: text('status').default('pending'),
+  enrolledAt: timestamp('enrolled_at').defaultNow(),
+});
+
+// Course content table
+export const courseContent = pgTable('course_content', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  courseId: uuid('course_id').references(() => teacherCourses.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  contentType: text('content_type').notNull(),
+  contentUrl: text('content_url'),
+  contentText: text('content_text'),
+  position: integer('position').default(0),
+  createdAt: timestamp('created_at').defaultNow(),
+});

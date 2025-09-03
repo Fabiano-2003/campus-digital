@@ -12,6 +12,8 @@ import {
   ChevronRight,
   Building,
   UserPlus,
+  ListMusic,
+  GraduationCap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -24,10 +26,12 @@ interface SidebarProps {
 const menuItems = [
   { icon: Home, label: "Início", href: "/dashboard" },
   { icon: UserPlus, label: "Seguir", href: "/follow" },
-  { icon: BookOpen, label: "Biblioteca", href: "/library" },
-  { icon: Users, label: "Grupos", href: "/groups" },
+  { icon: BookOpen, label: "Documentos", href: "/documents" },
+  { icon: Bookmark, label: "Biblioteca", href: "/library" },
+  { icon: ListMusic, label: "Playlists", href: "/dashboard?tab=playlists" },
+  { icon: GraduationCap, label: "Área de Estudo", href: "/dashboard?tab=study" },
+  { icon: Users, label: "Meus Cursos", href: "/teacher-courses" },
   { icon: MessageCircle, label: "Chat", href: "/chat" },
-  { icon: FileText, label: "Documentos", href: "/documents" },
   { icon: Building, label: "Instituições", href: "/institutions" },
 ];
 
