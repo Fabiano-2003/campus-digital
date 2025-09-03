@@ -8,6 +8,35 @@ const router = express.Router();
 // Get all books
 router.get('/', async (req, res) => {
   try {
+    const allBooks = await db.select().from(books).orderBy(desc(books.created_at));
+    res.json(allBooks);
+  } catch (error) {
+    console.error('Error fetching books:', error);
+    res.status(500).json({ error: 'Failed to fetch books' });
+  }
+});
+
+// Get book by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const book = await db.select().from(books).where(eq(books.id, req.params.id)).limit(1);
+    if (book.length === 0) {
+      return res.status(404).json({ error: 'Book not found' });
+    }
+    res.json(book[0]);
+  } catch (error) {
+    console.error('Error fetching book:', error);
+    res.status(500).json({ error: 'Failed to fetch book' });
+  }
+});
+
+export default router;
+
+const router = express.Router();
+
+// Get all books
+router.get('/', async (req, res) => {
+  try {
     const { category, search, institution } = req.query;
     
     const conditions = [];

@@ -54,3 +54,22 @@ router.post('/', async (req, res) => {
 });
 
 export default router;
+import express from 'express';
+import { db } from '../db';
+import { videos } from '../../shared/schema';
+import { desc, eq } from 'drizzle-orm';
+
+const router = express.Router();
+
+// Get all videos
+router.get('/', async (req, res) => {
+  try {
+    const allVideos = await db.select().from(videos).orderBy(desc(videos.created_at));
+    res.json(allVideos);
+  } catch (error) {
+    console.error('Error fetching videos:', error);
+    res.status(500).json({ error: 'Failed to fetch videos' });
+  }
+});
+
+export default router;

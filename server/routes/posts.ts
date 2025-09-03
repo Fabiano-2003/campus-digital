@@ -72,3 +72,22 @@ router.post('/:id/like', async (req, res) => {
 });
 
 export default router;
+import express from 'express';
+import { db } from '../db';
+import { feed_posts, post_likes, post_comments } from '../../shared/schema';
+import { desc, eq } from 'drizzle-orm';
+
+const router = express.Router();
+
+// Get all posts
+router.get('/', async (req, res) => {
+  try {
+    const posts = await db.select().from(feed_posts).orderBy(desc(feed_posts.created_at));
+    res.json(posts);
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    res.status(500).json({ error: 'Failed to fetch posts' });
+  }
+});
+
+export default router;

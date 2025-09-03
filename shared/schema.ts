@@ -264,3 +264,165 @@ export const follows = pgTable('follows', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
+import { pgTable, text, uuid, timestamp, integer, bigint, boolean, jsonb } from 'drizzle-orm/pg-core';
+
+export const users = pgTable('users', {
+  id: uuid('id').primaryKey(),
+  email: text('email').notNull().unique(),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const profiles = pgTable('profiles', {
+  id: uuid('id').primaryKey(),
+  full_name: text('full_name'),
+  avatar_url: text('avatar_url'),
+  province: text('province'),
+  institution: text('institution'),
+  course: text('course'),
+  academic_level: text('academic_level'),
+  student_id: text('student_id'),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
+});
+
+export const books = pgTable('books', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  title: text('title').notNull(),
+  author: text('author').notNull(),
+  description: text('description'),
+  file_url: text('file_url'),
+  cover_url: text('cover_url'),
+  category: text('category').notNull(),
+  institution: text('institution'),
+  subject: text('subject'),
+  file_size: bigint('file_size', { mode: 'number' }),
+  download_count: integer('download_count').default(0),
+  visibility: text('visibility').default('public'),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
+  uploaded_by: uuid('uploaded_by'),
+});
+
+export const monographs = pgTable('monographs', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  title: text('title').notNull(),
+  author: text('author').notNull(),
+  abstract: text('abstract'),
+  file_url: text('file_url').notNull(),
+  category: text('category').notNull(),
+  institution: text('institution').notNull(),
+  course: text('course'),
+  advisor: text('advisor'),
+  publication_year: integer('publication_year'),
+  views: integer('views').default(0),
+  likes: integer('likes').default(0),
+  visibility: text('visibility').default('public'),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
+  uploaded_by: uuid('uploaded_by'),
+});
+
+export const study_groups = pgTable('study_groups', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  description: text('description'),
+  subject: text('subject').notNull(),
+  level: text('level').notNull(),
+  institution: text('institution'),
+  max_members: integer('max_members').default(50),
+  is_active: boolean('is_active').default(true),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
+  created_by: uuid('created_by'),
+});
+
+export const group_members = pgTable('group_members', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  group_id: uuid('group_id'),
+  user_id: uuid('user_id'),
+  role: text('role').default('member'),
+  joined_at: timestamp('joined_at').defaultNow().notNull(),
+});
+
+export const group_messages = pgTable('group_messages', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  group_id: uuid('group_id'),
+  user_id: uuid('user_id'),
+  message: text('message').notNull(),
+  message_type: text('message_type').default('text'),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const generated_documents = pgTable('generated_documents', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: uuid('user_id'),
+  title: text('title').notNull(),
+  document_type: text('document_type').notNull(),
+  content: jsonb('content'),
+  file_url: text('file_url'),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
+});
+
+export const feed_posts = pgTable('feed_posts', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: uuid('user_id'),
+  content: text('content').notNull(),
+  post_type: text('post_type').default('text'),
+  metadata: jsonb('metadata'),
+  likes: integer('likes').default(0),
+  comments_count: integer('comments_count').default(0),
+  visibility: text('visibility').default('public'),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
+});
+
+export const post_likes = pgTable('post_likes', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  post_id: uuid('post_id'),
+  user_id: uuid('user_id'),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const post_comments = pgTable('post_comments', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  post_id: uuid('post_id'),
+  user_id: uuid('user_id'),
+  content: text('content').notNull(),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
+});
+
+export const videos = pgTable('videos', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  title: text('title').notNull(),
+  description: text('description'),
+  video_url: text('video_url').notNull(),
+  thumbnail_url: text('thumbnail_url'),
+  category: text('category').notNull(),
+  subject: text('subject'),
+  institution: text('institution'),
+  duration: integer('duration'),
+  views: integer('views').default(0),
+  likes: integer('likes').default(0),
+  visibility: text('visibility').default('public'),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
+  uploaded_by: uuid('uploaded_by'),
+});
+
+export const institutions = pgTable('institutions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  type: text('type').notNull(),
+  province: text('province').notNull(),
+  city: text('city'),
+  description: text('description'),
+  logo_url: text('logo_url'),
+  website_url: text('website_url'),
+  contact_email: text('contact_email'),
+  contact_phone: text('contact_phone'),
+  is_verified: boolean('is_verified').default(false),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
+});
