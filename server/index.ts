@@ -312,7 +312,7 @@ app.get('/api/videos', (req, res) => {
 });
 
 // Handle React app routes (SPA)
-app.get('*', (req, res, next) => {
+app.get('/*', (req, res, next) => {
   // Skip API routes
   if (req.path.startsWith('/api/')) {
     return next();
