@@ -322,6 +322,7 @@ app.get('/api/videos', (req, res) => {
 // import friendsRouter from './routes/friends'; // Assuming friends routes are in routes/friends.ts
 import playlistsRouter from './routes/playlists';
 import coursesRouter from './routes/courses';
+import notesRouter from './routes/notes';
 
 // Use the routes
 app.use('/api/auth', authRouter);
@@ -335,6 +336,7 @@ app.use('/api/conversations', conversationsRouter);
 app.use('/api/friends', friendsRouter);
 app.use('/api/playlists', playlistsRouter);
 app.use('/api/courses', coursesRouter);
+app.use('/api/notes', notesRouter);
 
 // Catch-all for unknown API routes
 app.use('/api', (req, res) => {

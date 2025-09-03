@@ -18,6 +18,7 @@ import { DocumentsFeed } from "@/components/feeds/DocumentsFeed";
 import { VideosFeed } from "@/components/feeds/VideosFeed";
 import { PlaylistsSection } from "@/components/dashboard/PlaylistsSection";
 import { StudyArea } from "@/components/dashboard/StudyArea";
+import { NotesSection } from "@/components/dashboard/NotesSection";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -42,7 +43,7 @@ const Dashboard = () => {
 
           {/* Main Navigation Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-10 mb-8 bg-gradient-to-r from-muted/50 to-muted/30 backdrop-blur-sm border-0 shadow-lg p-2 h-14">
+            <TabsList className="grid w-full grid-cols-11 mb-8 bg-gradient-to-r from-muted/50 to-muted/30 backdrop-blur-sm border-0 shadow-lg p-2 h-14">
               <TabsTrigger value="overview" className="flex items-center gap-2">
                 <Home className="h-4 w-4" />
                 Início
@@ -58,6 +59,10 @@ const Dashboard = () => {
               <TabsTrigger value="study" className="flex items-center gap-2">
                 <BookOpen className="h-4 w-4" />
                 Estudo
+              </TabsTrigger>
+              <TabsTrigger value="notes" className="flex items-center gap-2">
+                <FileText className="h-4 w-4" />
+                Notas
               </TabsTrigger>
               <TabsTrigger value="groups" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
@@ -109,6 +114,10 @@ const Dashboard = () => {
 
             <TabsContent value="study">
               <StudyArea />
+            </TabsContent>
+
+            <TabsContent value="notes">
+              <NotesSection />
             </TabsContent>
 
             <TabsContent value="groups">

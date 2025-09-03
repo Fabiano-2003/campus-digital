@@ -323,3 +323,39 @@ export const courseContent = pgTable('course_content', {
   position: integer('position').default(0),
   createdAt: timestamp('created_at').defaultNow(),
 });
+
+// Notes table
+export const notes = pgTable('notes', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  content: text('content').notNull(),
+  tags: text('tags').array(),
+  subject: text('subject'),
+  category: text('category').default('general'),
+  isPublic: boolean('is_public').default(false),
+  isFavorite: boolean('is_favorite').default(false),
+  folderId: uuid('folder_id'),
+  views: integer('views').default(0),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+// Note folders table
+export const noteFolders = pgTable('note_folders', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  name: text('name').notNull(),
+  color: text('color').default('#6366f1'),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+// Note shares table
+export const noteShares = pgTable('note_shares', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  noteId: uuid('note_id').references(() => notes.id, { onDelete: 'cascade' }),
+  sharedBy: uuid('shared_by').references(() => users.id, { onDelete: 'cascade' }),
+  sharedWith: uuid('shared_with').references(() => users.id, { onDelete: 'cascade' }),
+  permission: text('permission').default('read'),
+  createdAt: timestamp('created_at').defaultNow(),
+});
