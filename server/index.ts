@@ -313,15 +313,15 @@ app.get('/api/videos', (req, res) => {
 });
 
 // Register all API routes
-// import authRouter from './routes/auth'; // Assuming auth routes are in routes/auth.ts
-// import profilesRouter from './routes/profiles'; // Assuming profiles routes are in routes/profiles.ts
-// import postsRouter from './routes/posts'; // Assuming posts routes are in routes/posts.ts
-// import groupsRouter from './routes/groups'; // Assuming groups routes are in routes/groups.ts
-// import booksRouter from './routes/books'; // Assuming books routes are in routes/books.ts
-// import videosRouter from './routes/videos'; // Assuming videos routes are in routes/videos.ts
-// import institutionsRouter from './routes/institutions'; // Assuming institutions routes are in routes/institutions.ts
-// import conversationsRouter from './routes/conversations'; // Assuming conversations routes are in routes/conversations.ts
-// import friendsRouter from './routes/friends'; // Assuming friends routes are in routes/friends.ts
+import authRouter from './routes/auth';
+import profilesRouter from './routes/profiles';
+import postsRouter from './routes/posts';
+import groupsRouter from './routes/groups';
+import booksRouter from './routes/books';
+import videosRouter from './routes/videos';
+import institutionsRouter from './routes/institutions';
+import conversationsRouter from './routes/conversations';
+import friendsRouter from './routes/friends';
 import playlistsRouter from './routes/playlists';
 import coursesRouter from './routes/courses';
 import notesRouter from './routes/notes';
