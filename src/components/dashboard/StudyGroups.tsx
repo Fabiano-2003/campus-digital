@@ -43,26 +43,36 @@ export function StudyGroups() {
         .from('study_groups')
         .select(`
           *,
-          group_members(count)
+          group_members!left(count),
+          creator:created_by!inner(
+            id,
+            full_name
+          )
         `)
-        .eq('is_active', true)
-        .order('created_at', { ascending: false });
+        .eq('is_active', true);
 
-      if (searchQuery) {
+      if (searchQuery.trim()) {
         query = query.or(`name.ilike.%${searchQuery}%,subject.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`);
       }
 
       if (selectedSubject !== "all") {
-        query = query.eq('subject', selectedSubject);
+        query = query.eq('subject', selectedSubject.toLowerCase());
       }
 
       if (selectedLevel !== "all") {
-        query = query.eq('level', selectedLevel);
+        query = query.eq('level', selectedLevel.toLowerCase());
       }
 
-      const { data, error } = await query.limit(20);
+      const { data, error } = await query
+        .order('created_at', { ascending: false })
+        .limit(20);
+        
       if (error) throw error;
-      return data;
+      
+      return data?.map(group => ({
+        ...group,
+        member_count: group.group_members?.[0]?.count || 0
+      })) || [];
     }
   });
 

@@ -12,7 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 interface PublicContent {
   id: string;
-  type: 'post' | 'video' | 'monograph' | 'book';
+  type: 'post' | 'video' | 'monograph' | 'book' | 'group';
   title?: string;
   content: string;
   author?: string;
@@ -27,12 +27,15 @@ interface PublicContent {
   thumbnail_url?: string;
   category?: string;
   subject?: string;
+  member_count?: number;
+  max_members?: number;
+  level?: string;
 }
 
 export const PublicFeed = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [filter, setFilter] = useState<'all' | 'posts' | 'videos' | 'monographs' | 'books'>('all');
+  const [filter, setFilter] = useState<'all' | 'posts' | 'videos' | 'monographs' | 'books' | 'groups'>('all');
 
   const { data: publicContent, isLoading } = useQuery({
     queryKey: ['public-content', filter],
@@ -115,6 +118,34 @@ export const PublicFeed = () => {
         }
       }
 
+      // Fetch study groups
+      if (filter === 'all' || filter === 'groups') {
+        const { data: studyGroups } = await supabase
+          .from('study_groups')
+          .select(`
+            *,
+            group_members!left(count),
+            creator:created_by!inner(
+              full_name
+            )
+          `)
+          .eq('is_active', true)
+          .order('created_at', { ascending: false })
+          .limit(10);
+        
+        if (studyGroups) {
+          content.push(...studyGroups.map(group => ({
+            ...group,
+            type: 'group' as const,
+            content: group.description || `Grupo de estudo de ${group.subject}`,
+            author: group.creator?.full_name || 'Usuário',
+            member_count: group.group_members?.[0]?.count || 0,
+            max_members: group.max_members,
+            likes: group.group_members?.[0]?.count || 0
+          })));
+        }
+      }
+
       // Sort by created_at
       return content.sort((a, b) => 
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -127,6 +158,7 @@ export const PublicFeed = () => {
       case 'video': return Play;
       case 'monograph': return GraduationCap;
       case 'book': return BookOpen;
+      case 'group': return Users;
       default: return MessageCircle;
     }
   };
@@ -136,6 +168,7 @@ export const PublicFeed = () => {
       case 'video': return 'text-red-500';
       case 'monograph': return 'text-blue-500';
       case 'book': return 'text-green-500';
+      case 'group': return 'text-orange-500';
       default: return 'text-purple-500';
     }
   };
@@ -170,7 +203,8 @@ export const PublicFeed = () => {
             { key: 'posts', label: 'Posts', icon: MessageCircle, count: '125' },
             { key: 'videos', label: 'Vídeos', icon: Play, count: '45' },
             { key: 'monographs', label: 'Monografias', icon: GraduationCap, count: '230' },
-            { key: 'books', label: 'Livros', icon: BookOpen, count: '180' }
+            { key: 'books', label: 'Livros', icon: BookOpen, count: '180' },
+            { key: 'groups', label: 'Grupos', icon: Users, count: '95' }
           ].map(({ key, label, icon: Icon, count }) => (
             <Button
               key={key}
@@ -238,8 +272,15 @@ export const PublicFeed = () => {
                             }`}
                           >
                             <TypeIcon className="h-3 w-3" />
-                            <span className="capitalize font-medium">{item.type}</span>
+                            <span className="capitalize font-medium">
+                              {item.type === 'group' ? 'Grupo' : item.type}
+                            </span>
                           </Badge>
+                          {item.type === 'group' && item.member_count !== undefined && (
+                            <Badge variant="outline" className="text-xs px-2 py-1 border-orange-200 bg-orange-50 text-orange-700">
+                              {item.member_count}/{item.max_members} membros
+                            </Badge>
+                          )}
                         </div>
                         <Badge variant="secondary" className="text-xs px-2 py-1 bg-gradient-to-r from-primary/10 to-secondary/10">
                           <Star className="h-3 w-3 mr-1" />
@@ -361,11 +402,13 @@ export const PublicFeed = () => {
                             }
                             if (item.type === 'video') navigate('/library');
                             else if (item.type === 'monograph' || item.type === 'book') navigate('/documents');
+                            else if (item.type === 'group') navigate(`/groups/${item.id}`);
                             else navigate('/dashboard');
                           }}
                           className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white px-4 py-2 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                         >
-                          {item.type === 'video' ? '▶ Assistir' : '📖 Ver Mais'}
+                          {item.type === 'video' ? '▶ Assistir' : 
+                           item.type === 'group' ? '👥 Participar' : '📖 Ver Mais'}
                         </Button>
                       )}
                     </div>

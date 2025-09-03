@@ -31,6 +31,8 @@ export default function Groups() {
   const [groups, setGroups] = useState<StudyGroup[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedSubject, setSelectedSubject] = useState("");
+  const [selectedLevel, setSelectedLevel] = useState("");
 
   useEffect(() => {
     fetchGroups();
@@ -38,14 +40,21 @@ export default function Groups() {
 
   const fetchGroups = async () => {
     try {
-      const { data, error } = await supabase
-        .from('study_groups')
-        .select(`
+      let query = supabase.from('study_groups').select(`
           *,
           group_members(count)
-        `)
-        .eq('is_active', true)
-        .order('created_at', { ascending: false });
+        `).eq('is_active', true);
+
+      if (selectedSubject) {
+        query = query.eq('subject', selectedSubject);
+      }
+      if (selectedLevel) {
+        query = query.eq('level', selectedLevel);
+      }
+
+      query = query.order('created_at', { ascending: false });
+
+      const { data, error } = await query;
 
       if (error) throw error;
 
@@ -101,6 +110,11 @@ export default function Groups() {
     group.description?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Example of fetching subjects and levels for filters
+  // In a real app, you'd likely fetch these from your database as well
+  const availableSubjects = ["Matemática", "Física", "Química", "História", "Geografia", "Português", "Inglês"];
+  const availableLevels = ["Ensino Fundamental", "Ensino Médio", "Ensino Superior", "Pós-Graduação"];
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
@@ -141,14 +155,42 @@ export default function Groups() {
           </Button>
         </div>
 
-        <div className="relative mb-6">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Pesquisar grupos por nome, matéria ou descrição..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Pesquisar grupos por nome, matéria ou descrição..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <select
+            value={selectedSubject}
+            onChange={(e) => {
+              setSelectedSubject(e.target.value);
+              fetchGroups();
+            }}
+            className="p-2 border rounded text-sm text-muted-foreground"
+          >
+            <option value="">Todas as Matérias</option>
+            {availableSubjects.map((subject) => (
+              <option key={subject} value={subject}>{subject}</option>
+            ))}
+          </select>
+          <select
+            value={selectedLevel}
+            onChange={(e) => {
+              setSelectedLevel(e.target.value);
+              fetchGroups();
+            }}
+            className="p-2 border rounded text-sm text-muted-foreground"
+          >
+            <option value="">Todos os Níveis</option>
+            {availableLevels.map((level) => (
+              <option key={level} value={level}>{level}</option>
+            ))}
+          </select>
         </div>
 
         {filteredGroups.length === 0 ? (
@@ -157,7 +199,7 @@ export default function Groups() {
               <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
               <h3 className="text-lg font-semibold mb-2">Nenhum grupo encontrado</h3>
               <p className="text-muted-foreground mb-4">
-                {searchTerm ? "Tente usar outros termos de busca" : "Seja o primeiro a criar um grupo de estudo!"}
+                {searchTerm || selectedSubject || selectedLevel ? "Tente usar outros termos de busca ou filtros." : "Seja o primeiro a criar um grupo de estudo!"}
               </p>
               <Button onClick={() => navigate('/create-group')}>
                 <Plus className="h-4 w-4 mr-2" />
@@ -204,21 +246,21 @@ export default function Groups() {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         size="sm"
                         onClick={() => navigate(`/groups/${group.id}`)}
                       >
                         <MessageCircle className="h-4 w-4 mr-1" />
                         Ver Grupo
                       </Button>
-                      <FollowButton 
-                        targetType="group" 
+                      <FollowButton
+                        targetType="group"
                         targetId={group.id}
                         allowLevelSelection={true}
                         showFollowerCount={true}
                       />
-                      <Button 
+                      <Button
                         size="sm"
                         onClick={() => joinGroup(group.id)}
                         disabled={group.member_count >= group.max_members}
