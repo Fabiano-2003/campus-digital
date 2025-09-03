@@ -159,6 +159,48 @@ export class ApiClient {
       body: JSON.stringify(institutionData),
     });
   }
+
+  // Friends endpoints
+  async sendFriendRequest(targetUserId: string, userId: string) {
+    return this.makeRequest('/friends/request', {
+      method: 'POST',
+      headers: { 'x-user-id': userId },
+      body: JSON.stringify({ targetUserId }),
+    });
+  }
+
+  async acceptFriendRequest(friendshipId: string, userId: string) {
+    return this.makeRequest(`/friends/accept/${friendshipId}`, {
+      method: 'POST',
+      headers: { 'x-user-id': userId },
+    });
+  }
+
+  async rejectFriendRequest(friendshipId: string, userId: string) {
+    return this.makeRequest(`/friends/reject/${friendshipId}`, {
+      method: 'POST',
+      headers: { 'x-user-id': userId },
+    });
+  }
+
+  async getFriendRequests(userId: string) {
+    return this.makeRequest('/friends/requests', {
+      headers: { 'x-user-id': userId },
+    });
+  }
+
+  async getFriends(userId: string, search?: string) {
+    const params = search ? `?search=${encodeURIComponent(search)}` : '';
+    return this.makeRequest(`/friends${params}`, {
+      headers: { 'x-user-id': userId },
+    });
+  }
+
+  async searchUsers(query: string, userId: string) {
+    return this.makeRequest(`/friends/search?q=${encodeURIComponent(query)}`, {
+      headers: { 'x-user-id': userId },
+    });
+  }
 }
 
 export const apiClient = new ApiClient();

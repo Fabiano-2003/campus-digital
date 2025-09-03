@@ -6,8 +6,13 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, Send, Users, MessageCircle } from "lucide-react";
+import { apiClient } from "@/lib/api";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Search, Send, Users, MessageCircle, UserPlus } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { FriendRequests } from "@/components/chat/FriendRequests";
+import { UserSearch } from "@/components/chat/UserSearch";
+import { useAuth } from "@/hooks/useAuth";
 
 interface User {
   id: string;
@@ -33,23 +38,19 @@ interface Message {
 
 export default function Chat() {
   const { toast } = useToast();
-  const [users, setUsers] = useState<User[]>([]);
-  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const { user } = useAuth();
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeTab, setActiveTab] = useState<'conversations' | 'users'>('conversations');
-  const [currentUserId, setCurrentUserId] = useState<string>("");
+  const [activeTab, setActiveTab] = useState<'friends' | 'requests' | 'search'>('friends');
 
-  useEffect(() => {
-    getCurrentUser();
-    if (activeTab === 'users') {
-      fetchUsers();
-    } else {
-      fetchConversations();
-    }
-  }, [activeTab]);
+  // Get friends list
+  const { data: friends, isLoading: friendsLoading } = useQuery({
+    queryKey: ['friends', user?.id, searchTerm],
+    queryFn: () => apiClient.getFriends(user!.id, searchTerm),
+    enabled: !!user?.id,
+  });
 
   // Real-time subscription para mensagens
   useEffect(() => {
@@ -77,57 +78,8 @@ export default function Chat() {
     };
   }, [selectedConversation]);
 
-  const getCurrentUser = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      setCurrentUserId(user.id);
-    }
-  };
-
-  const fetchUsers = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, full_name, avatar_url')
-        .neq('id', currentUserId)
-        .limit(50);
-
-      if (error) throw error;
-      setUsers(data || []);
-    } catch (error) {
-      console.error('Error fetching users:', error);
-    }
-  };
-
-  const fetchConversations = async () => {
-    // Simulando conversas - em uma implementação real, você teria uma tabela de conversas
-    // Por enquanto, vamos mostrar usuários com quem já interagiu
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, full_name, avatar_url')
-        .neq('id', currentUserId)
-        .limit(10);
-
-      if (error) throw error;
-      
-      const mockConversations: Conversation[] = (data || []).map(user => ({
-        id: `conv_${user.id}`,
-        participant: user,
-        last_message: "Clique para iniciar uma conversa",
-        last_message_time: new Date().toISOString(),
-        unread_count: 0
-      }));
-
-      setConversations(mockConversations);
-    } catch (error) {
-      console.error('Error fetching conversations:', error);
-    }
-  };
-
   const startConversation = async (userId: string) => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
       // Criar ou buscar conversa existente
@@ -144,7 +96,6 @@ export default function Chat() {
 
       setSelectedConversation(conversation.id);
       loadMessages(conversation.id);
-      setActiveTab('conversations');
     } catch (error) {
       console.error('Error starting conversation:', error);
       toast({
@@ -174,7 +125,6 @@ export default function Chat() {
     if (!newMessage.trim() || !selectedConversation) return;
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
       const { error } = await supabase
@@ -188,7 +138,6 @@ export default function Chat() {
       if (error) throw error;
 
       setNewMessage("");
-      // Não precisamos recarregar mensagens pois o real-time vai atualizar automaticamente
     } catch (error) {
       console.error('Error sending message:', error);
       toast({
@@ -199,13 +148,7 @@ export default function Chat() {
     }
   };
 
-  const filteredUsers = users.filter(user =>
-    user.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const filteredConversations = conversations.filter(conv =>
-    conv.participant.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const selectedFriend = friends?.find((f: any) => f.id === selectedConversation);
 
   return (
     <AppLayout>
@@ -216,121 +159,112 @@ export default function Chat() {
             <div className="lg:w-1/3 space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>Mensagens</CardTitle>
-                  <div className="flex gap-2">
+                  <CardTitle>Chat</CardTitle>
+                  <div className="flex gap-1">
                     <Button
-                      variant={activeTab === 'conversations' ? 'default' : 'outline'}
+                      variant={activeTab === 'friends' ? 'default' : 'outline'}
                       size="sm"
-                      onClick={() => setActiveTab('conversations')}
-                      className="flex-1"
+                      onClick={() => setActiveTab('friends')}
+                      className="flex-1 text-xs"
                     >
-                      <MessageCircle className="h-4 w-4 mr-1" />
-                      Conversas
+                      <MessageCircle className="h-3 w-3 mr-1" />
+                      Amigos
                     </Button>
                     <Button
-                      variant={activeTab === 'users' ? 'default' : 'outline'}
+                      variant={activeTab === 'requests' ? 'default' : 'outline'}
                       size="sm"
-                      onClick={() => setActiveTab('users')}
-                      className="flex-1"
+                      onClick={() => setActiveTab('requests')}
+                      className="flex-1 text-xs"
                     >
-                      <Users className="h-4 w-4 mr-1" />
-                      Usuários
+                      <Users className="h-3 w-3 mr-1" />
+                      Pedidos
+                    </Button>
+                    <Button
+                      variant={activeTab === 'search' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setActiveTab('search')}
+                      className="flex-1 text-xs"
+                    >
+                      <UserPlus className="h-3 w-3 mr-1" />
+                      Buscar
                     </Button>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="relative mb-4">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Pesquisar..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
+                  {activeTab === 'friends' && (
+                    <>
+                      <div className="relative mb-4">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          placeholder="Pesquisar amigos..."
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
 
-                  <div className="max-h-96 overflow-y-auto space-y-2">
-                    {activeTab === 'conversations' ? (
-                      filteredConversations.length === 0 ? (
-                        <div className="text-center py-8">
-                          <MessageCircle className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                          <p className="text-muted-foreground">Nenhuma conversa ainda</p>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setActiveTab('users')}
-                            className="mt-2"
-                          >
-                            Encontrar usuários
-                          </Button>
-                        </div>
-                      ) : (
-                        filteredConversations.map((conversation) => (
-                          <div
-                            key={conversation.id}
-                            className={`p-3 rounded-lg cursor-pointer transition-colors ${
-                              selectedConversation === conversation.participant.id
-                                ? 'bg-primary/10 border border-primary/20'
-                                : 'hover:bg-muted/50'
-                            }`}
-                            onClick={() => startConversation(conversation.participant.id)}
-                          >
-                            <div className="flex items-center gap-3">
-                              <Avatar className="h-10 w-10">
-                                <AvatarFallback>
-                                  {conversation.participant.full_name?.charAt(0) || 'U'}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex-1 min-w-0">
-                                <p className="font-semibold text-sm truncate">
-                                  {conversation.participant.full_name || 'Usuário'}
-                                </p>
-                                <p className="text-xs text-muted-foreground truncate">
-                                  {conversation.last_message}
-                                </p>
-                              </div>
-                              {conversation.unread_count > 0 && (
-                                <div className="bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                                  {conversation.unread_count}
+                      <div className="max-h-96 overflow-y-auto space-y-2">
+                        {friendsLoading ? (
+                          <div className="text-center py-4">
+                            <p className="text-muted-foreground text-sm">Carregando...</p>
+                          </div>
+                        ) : friends && friends.length > 0 ? (
+                          friends.map((friend: any) => (
+                            <div
+                              key={friend.id}
+                              className={`p-3 rounded-lg cursor-pointer transition-colors ${
+                                selectedConversation === friend.id
+                                  ? 'bg-primary/10 border border-primary/20'
+                                  : 'hover:bg-muted/50'
+                              }`}
+                              onClick={() => startConversation(friend.id)}
+                            >
+                              <div className="flex items-center gap-3">
+                                <Avatar className="h-10 w-10">
+                                  <AvatarFallback>
+                                    {friend.full_name?.charAt(0) || 'U'}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-semibold text-sm truncate">
+                                    {friend.full_name || 'Usuário'}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground">
+                                    Clique para conversar
+                                  </p>
                                 </div>
-                              )}
-                            </div>
-                          </div>
-                        ))
-                      )
-                    ) : (
-                      filteredUsers.length === 0 ? (
-                        <div className="text-center py-8">
-                          <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                          <p className="text-muted-foreground">Nenhum usuário encontrado</p>
-                        </div>
-                      ) : (
-                        filteredUsers.map((user) => (
-                          <div
-                            key={user.id}
-                            className="p-3 rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
-                            onClick={() => startConversation(user.id)}
-                          >
-                            <div className="flex items-center gap-3">
-                              <Avatar className="h-10 w-10">
-                                <AvatarFallback>
-                                  {user.full_name?.charAt(0) || 'U'}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex-1">
-                                <p className="font-semibold text-sm">
-                                  {user.full_name || 'Usuário'}
-                                </p>
-                                <p className="text-xs text-muted-foreground">
-                                  Clique para iniciar conversa
-                                </p>
                               </div>
                             </div>
+                          ))
+                        ) : (
+                          <div className="text-center py-8">
+                            <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                            <p className="text-muted-foreground text-sm">Nenhum amigo ainda</p>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setActiveTab('search')}
+                              className="mt-2"
+                            >
+                              Encontrar usuários
+                            </Button>
                           </div>
-                        ))
-                      )
-                    )}
-                  </div>
+                        )}
+                      </div>
+                    </>
+                  )}
+
+                  {activeTab === 'requests' && (
+                    <div className="max-h-96 overflow-y-auto">
+                      <FriendRequests />
+                    </div>
+                  )}
+
+                  {activeTab === 'search' && (
+                    <div className="max-h-96 overflow-y-auto">
+                      <UserSearch />
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -338,20 +272,16 @@ export default function Chat() {
             {/* Chat Area */}
             <div className="lg:w-2/3">
               <Card className="h-full flex flex-col">
-                {selectedConversation ? (
+                {selectedConversation && selectedFriend ? (
                   <>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-3">
                         <Avatar className="h-8 w-8">
                           <AvatarFallback>
-                            {users.find(u => u.id === selectedConversation)?.full_name?.charAt(0) || 
-                             conversations.find(c => c.participant.id === selectedConversation)?.participant.full_name?.charAt(0) || 'U'}
+                            {selectedFriend.full_name?.charAt(0) || 'U'}
                           </AvatarFallback>
                         </Avatar>
-                        <span>
-                          {users.find(u => u.id === selectedConversation)?.full_name || 
-                           conversations.find(c => c.participant.id === selectedConversation)?.participant.full_name || 'Usuário'}
-                        </span>
+                        <span>{selectedFriend.full_name || 'Usuário'}</span>
                       </CardTitle>
                     </CardHeader>
                     <Separator />
@@ -369,12 +299,12 @@ export default function Chat() {
                             <div
                               key={message.id}
                               className={`flex ${
-                                message.sender_id === currentUserId ? 'justify-end' : 'justify-start'
+                                message.sender_id === user?.id ? 'justify-end' : 'justify-start'
                               }`}
                             >
                               <div
                                 className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                                  message.sender_id === currentUserId
+                                  message.sender_id === user?.id
                                     ? 'bg-primary text-primary-foreground'
                                     : 'bg-muted'
                                 }`}
@@ -410,9 +340,9 @@ export default function Chat() {
                   <CardContent className="flex-1 flex items-center justify-center">
                     <div className="text-center">
                       <MessageCircle className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-                      <h3 className="text-lg font-semibold mb-2">Selecione uma conversa</h3>
+                      <h3 className="text-lg font-semibold mb-2">Selecione um amigo</h3>
                       <p className="text-muted-foreground">
-                        Escolha um usuário para começar a conversar
+                        Escolha um amigo para começar a conversar
                       </p>
                     </div>
                   </CardContent>

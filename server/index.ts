@@ -21,8 +21,8 @@ app.use(express.static(path.join(__dirname, '../dist')));
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     timestamp: new Date().toISOString(),
     port: PORT,
     environment: process.env.NODE_ENV || 'development'
@@ -43,6 +43,7 @@ try {
   const profilesRoutes = await import('./routes/profiles.js');
   const videosRoutes = await import('./routes/videos.js');
   const institutionsRoutes = await import('./routes/institutions.js');
+  const friendsRoutes = await import('./routes/friends');
 
   app.use('/api/auth', authRoutes.default);
   app.use('/api/books', booksRoutes.default);
@@ -51,6 +52,7 @@ try {
   app.use('/api/profiles', profilesRoutes.default);
   app.use('/api/videos', videosRoutes.default);
   app.use('/api/institutions', institutionsRoutes.default);
+  app.use('/api/friends', friendsRoutes);
 
   console.log('✅ All API routes loaded successfully');
 } catch (error) {
@@ -64,7 +66,7 @@ app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api/')) {
     return next();
   }
-  
+
   const filePath = path.join(__dirname, '../dist/index.html');
   res.sendFile(filePath, (err) => {
     if (err) {
@@ -77,7 +79,7 @@ app.get('*', (req, res, next) => {
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('Server Error:', err);
-  res.status(500).json({ 
+  res.status(500).json({
     error: 'Internal server error',
     message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
   });
