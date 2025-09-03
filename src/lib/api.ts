@@ -4,10 +4,10 @@ const getApiBaseUrl = () => {
     // In development, try to connect to the backend server
     const currentPort = window.location.port;
     if (currentPort === '8080' || currentPort === '8081' || currentPort === '8082' || currentPort === '8083') {
-      // Frontend is running, backend should be on 5000
-      return 'http://0.0.0.0:5000/api';
+      // Frontend is running, backend should be on 3001
+      return 'http://0.0.0.0:3001/api';
     }
-    return 'http://0.0.0.0:5000/api';
+    return 'http://0.0.0.0:3001/api';
   }
   return '/api';
 };
