@@ -9,7 +9,7 @@ run = ["tsx", "server/index.ts"]
 build = ["npm", "run", "build"]
 
 [workflows]
-runButton = "Project"
+runButton = "SaberAngola Optimized"
 
 [[workflows.workflow]]
 name = "Project"
@@ -82,6 +82,43 @@ waitForPort = 5000
 
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow]]
+name = "SaberAngola Optimized"
+author = 47199577
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🎯 Iniciando SaberAngola...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🧹 Limpando cache e processos...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pkill -f \"tsx|vite|node\" 2>/dev/null || true"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "sleep 2"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"📦 Verificando dependências...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm install --silent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"🚀 Iniciando aplicação...\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
 
 [[ports]]
 localPort = 3001
