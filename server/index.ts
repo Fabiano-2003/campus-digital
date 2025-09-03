@@ -311,28 +311,23 @@ app.get('/api/videos', (req, res) => {
   res.json({ videos: mockVideos, total: mockVideos.length });
 });
 
-// Handle React app routes (SPA)
-app.get('/*', (req, res, next) => {
-  // Skip API routes
-  if (req.path.startsWith('/api/')) {
-    return next();
-  }
-  
+// Catch-all for unknown API routes
+app.use('/api', (req, res) => {
+  res.status(404).json({ 
+    error: 'Endpoint da API não encontrado',
+    path: req.path,
+    method: req.method
+  });
+});
+
+// Handle React app routes (SPA) - must be last
+app.use((req, res) => {
   const filePath = path.join(__dirname, '../dist/index.html');
   res.sendFile(filePath, (err) => {
     if (err) {
       console.error('Erro ao servir index.html:', err);
       res.status(404).send('Página não encontrada');
     }
-  });
-});
-
-// 404 handler for API routes
-app.use('/api/*', (req, res) => {
-  res.status(404).json({ 
-    error: 'Endpoint da API não encontrado',
-    path: req.path,
-    method: req.method
   });
 });
 

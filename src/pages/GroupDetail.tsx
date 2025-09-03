@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Users, Send, Calendar, MapPin, BookOpen, Crown, Settings, UserPlus, MoreVertical, FileText, Download, Heart, MessageCircle, Eye, Tabs } from "lucide-react";
+import { ArrowLeft, Users, Send, Calendar, MapPin, BookOpen, Crown, Settings, UserPlus, MoreVertical, FileText, Download, Heart, MessageCircle, Eye } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { BreadcrumbNav } from "@/components/ui/breadcrumb-nav";
 import { useAuth } from "@/hooks/useAuth";
