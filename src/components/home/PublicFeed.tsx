@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Calendar, Heart, MessageCircle, Share2, Eye, Download, Play, BookOpen, GraduationCap, TrendingUp, Clock, Star } from "lucide-react";
+import { Calendar, Heart, MessageCircle, Share2, Eye, Download, Play, BookOpen, GraduationCap, TrendingUp, Clock, Star, Users } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
