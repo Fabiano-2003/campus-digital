@@ -22,6 +22,8 @@ app.use(cors({
     'http://0.0.0.0:8080',
     'https://*.replit.dev',
     'https://*.replit.co',
+    'https://3be3e329-8f3c-4dc9-8cd5-9d1e777e2bf7-00-3rob95sh8275d.janeway.replit.dev',
+    process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : '',
     process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : ''
   ].filter(Boolean),
   credentials: true,
