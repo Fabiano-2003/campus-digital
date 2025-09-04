@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   BookOpen,
+  Bookmark,
   FileText,
   Users,
   User,
