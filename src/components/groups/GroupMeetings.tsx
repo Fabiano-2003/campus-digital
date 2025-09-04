@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Calendar, Clock, MapPin, Users, Video, Plus, Edit, Trash2, UserCheck, UserX, UserQuestion } from "lucide-react";
+import { Calendar, Clock, MapPin, Users, Video, Plus, Edit, Trash2, UserCheck, UserX, HelpCircle } from "lucide-react";
 import { formatDistanceToNow, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useToast } from "@/components/ui/use-toast";
@@ -257,8 +257,8 @@ export function GroupMeetings({ groupId, userRole, isMember }: GroupMeetingsProp
     switch (status) {
       case 'confirmado': return <UserCheck className="h-4 w-4 text-green-600" />;
       case 'nao_vai': return <UserX className="h-4 w-4 text-red-600" />;
-      case 'talvez': return <UserQuestion className="h-4 w-4 text-yellow-600" />;
-      default: return <UserQuestion className="h-4 w-4 text-gray-400" />;
+      case 'talvez': return <HelpCircle className="h-4 w-4 text-yellow-600" />;
+      default: return <HelpCircle className="h-4 w-4 text-gray-400" />;
     }
   };
 
@@ -510,7 +510,7 @@ export function GroupMeetings({ groupId, userRole, isMember }: GroupMeetingsProp
                         size="sm"
                         onClick={() => updateAttendance(meeting.id, 'talvez')}
                       >
-                        <UserQuestion className="h-3 w-3 mr-1" />
+                        <HelpCircle className="h-3 w-3 mr-1" />
                         Talvez
                       </Button>
                       <Button
