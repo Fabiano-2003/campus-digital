@@ -1,0 +1,266 @@
+SABERANGOLA - PROBLEMAS CONHECIDOS E SOLUÇÕES
+============================================
+
+Data de Criação: 04/09/2025
+Última Atualização: 04/09/2025
+
+CRÍTICOS - REQUEREM ATENÇÃO IMEDIATA
+===================================
+
+1. REJEIÇÕES DE PROMESSAS NÃO TRATADAS
+--------------------------------------
+Problema: Logs contínuos de "unhandledrejection" a cada segundo
+Localização: Browser console
+Status: 🔄 EM INVESTIGAÇÃO
+
+Sintomas:
+- Logs repetitivos de unhandled promise rejection
+- Objeto vazio {} como razão da rejeição
+- Ocorre aproximadamente a cada 1 segundo
+- Impacta performance e debugabilidade
+
+Investigações realizadas:
+✅ Adicionado error handling no useAuth hook
+✅ Configurado handlers globais em main.tsx
+✅ Melhorada configuração do Supabase client
+❌ Origem exata ainda não identificada
+
+Próximos passos:
+- Implementar logging mais detalhado
+- Verificar todas as calls assíncronas
+- Analisar integrações com Supabase
+- Considerar desabilitar auto-refresh temporariamente
+
+Workaround temporário:
+- Handler global previne errors no console
+- Aplicação continua funcional
+
+2. SCHEMA SUPABASE INCOMPLETO
+-----------------------------
+Problema: Tabelas referenciadas no código não existem no banco
+Localização: src/components/groups/GroupMeetings.tsx
+Status: ❌ CRÍTICO
+
+Tabelas faltantes:
+- group_meetings
+- meeting_attendees
+
+Erro TypeScript:
+- "group_meetings" is not assignable to parameter type
+- "meeting_attendees" is not assignable to parameter type
+- Type instantiation is excessively deep
+
+Impacto:
+❌ GroupMeetings component não funciona
+❌ Sistema de reuniões inoperante
+❌ 11 erros TypeScript no arquivo
+
+Solução necessária:
+1. Criar schema completo no Supabase
+2. Executar migrações
+3. Regenerar tipos TypeScript
+4. Atualizar componente conforme schema
+
+3. CONFLITOS DE PORTA INTERMITENTES
+----------------------------------
+Problema: Processos anteriores mantêm portas ocupadas
+Localização: Vite (5000) e Express (3001)
+Status: 🔄 PARCIALMENTE RESOLVIDO
+
+Sintomas:
+- "Port 5000 is already in use"
+- "Port 3001 is already in use"
+- Servidor usa porta alternativa (3002)
+- Requer kill manual de processos
+
+Solução implementada:
+✅ Auto-fallback para porta alternativa (backend)
+✅ Kill de processos via script
+
+Melhorias necessárias:
+- Auto-cleanup no início
+- Port detection mais robusta
+- Grace shutdown melhorado
+
+MODERADOS - IMPACTAM DESENVOLVIMENTO
+===================================
+
+4. WARNINGS DO REACT ROUTER
+---------------------------
+Problema: Warnings sobre futuras mudanças do React Router v7
+Localização: Browser console
+Status: ⚠️ INFORMATIVO
+
+Warnings:
+- React Router Future Flag Warning: v7_startTransition
+- React Router Future Flag Warning: v7_relativeSplatPath
+
+Impacto:
+- Não afeta funcionalidade atual
+- Preparação necessária para v7
+- Logs desnecessários durante desenvolvimento
+
+Solução:
+- Adicionar future flags no Router configuration
+- Ou aguardar migração para v7
+
+5. TIPOS TYPESCRIPT INCONSISTENTES
+----------------------------------
+Problema: Tipos gerados não correspondem ao código
+Localização: Múltiplos arquivos
+Status: 🔄 EM ANDAMENTO
+
+Exemplos:
+- GroupMeeting interface vs database schema
+- MeetingAttendee properties mismatch
+- Database relations undefined
+
+Causa raiz:
+- Schema Supabase não atualizado
+- Tipos gerados automaticamente desatualizados
+- Desenvolvimento ahead of database
+
+Solução:
+1. Finalizar schema do banco
+2. Regenerar tipos
+3. Atualizar interfaces manualmente
+
+6. COMPONENTE GROUPMEETINGS COM ERROS
+------------------------------------
+Problema: 11 erros TypeScript no componente
+Localização: src/components/groups/GroupMeetings.tsx
+Status: ❌ BLOQUEANTE
+
+Erros principais:
+- Tabelas inexistentes no schema
+- Property 'count' does not exist on type 'string'
+- Type instantiation excessively deep
+
+Funcionalidades afetadas:
+❌ Criação de reuniões
+❌ Listagem de reuniões
+❌ Gestão de participantes
+❌ Status de participação
+
+Dependência:
+- Resolução do problema #2 (Schema Supabase)
+
+MENORES - MELHORIAS FUTURAS
+==========================
+
+7. MISSING DESCRIPTION EM DIALOG
+--------------------------------
+Problema: Warning sobre acessibilidade
+Localização: DialogContent components
+Status: ⚠️ ACESSIBILIDADE
+
+Warning:
+"Missing `Description` or `aria-describedby={undefined}` for {DialogContent}"
+
+Solução:
+- Adicionar DialogDescription onde necessário
+- Ou aria-describedby apropriado
+
+8. ÍCONES LUCIDE DESATUALIZADOS
+------------------------------
+Problema: UserQuestion icon não existe mais
+Localização: Múltiplos componentes
+Status: ✅ RESOLVIDO
+
+Resolução aplicada:
+✅ Substituído UserQuestion por HelpCircle
+✅ Atualizada importação
+
+Nota:
+- Verificar periodicamente outras icons deprecated
+
+9. ENVIRONMENT VARIABLES EXPOSTAS
+---------------------------------
+Problema: Chaves visíveis no código
+Localização: src/integrations/supabase/client.ts
+Status: ⚠️ SEGURANÇA (DESENVOLVIMENTO)
+
+Observação:
+- Chaves públicas do Supabase são seguras
+- Chaves privadas não estão expostas
+- Boas práticas para produção necessárias
+
+10. PERFORMANCE NÃO OTIMIZADA
+----------------------------
+Problema: Otimizações básicas faltando
+Localização: Aplicação geral
+Status: 🔄 FUTURO
+
+Áreas para melhoria:
+- Bundle analysis
+- Image optimization
+- Service worker
+- Lazy loading mais agressivo
+- Code splitting mais granular
+
+11. LOGS EXCESSIVOS EM DESENVOLVIMENTO
+-------------------------------------
+Problema: Muitos logs durante desenvolvimento
+Localização: Console do servidor
+Status: ⚠️ INFORMATIVO
+
+Logs frequentes:
+- Todas as requisições HTTP
+- Auth state changes
+- Dotenv injections
+
+Solução:
+- Log levels configuráveis
+- Ambiente-specific logging
+- Structured logging
+
+SOLUÇÕES EM ANDAMENTO
+====================
+
+CURTO PRAZO (1-2 semanas):
+1. ✅ Resolver conflitos de porta definitivamente
+2. 🔄 Investigar origem das promise rejections
+3. ❌ Implementar schema completo do Supabase
+4. ❌ Corrigir componente GroupMeetings
+
+MÉDIO PRAZO (1 mês):
+1. Otimizações de performance
+2. Testes automatizados
+3. Logging estruturado
+4. Security headers
+
+LONGO PRAZO (2-3 meses):
+1. Migration para React Router v7
+2. Performance monitoring
+3. Error tracking service
+4. Comprehensive testing suite
+
+WORKAROUNDS TEMPORÁRIOS
+======================
+
+Para desenvolvimento contínuo:
+✅ Promise rejections não impedem funcionamento
+✅ Porta alternativa funciona para backend
+✅ Componentes principais funcionais
+✅ Autenticação estável
+
+Comandos úteis para debugging:
+- pkill -f "vite|tsx|node" (limpar processos)
+- npm run dev (restart completo)
+- Browser DevTools > Console (monitor errors)
+- Network tab (verificar requests)
+
+MONITORAMENTO
+============
+
+Arquivos para observar:
+- Browser console (promise rejections)
+- Terminal do servidor (port conflicts)
+- TypeScript errors (VS Code problems panel)
+- Network requests (DevTools)
+
+Métricas a acompanhar:
+- Tempo de startup
+- Frequência de errors
+- Performance de queries
+- Bundle size growth

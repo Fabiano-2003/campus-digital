@@ -1,0 +1,166 @@
+SABERANGOLA - CONFIGURAÇÃO DE AMBIENTE DE DESENVOLVIMENTO
+========================================================
+
+Data de Criação: 04/09/2025
+Última Atualização: 04/09/2025
+
+PRÉ-REQUISITOS
+--------------
+- Node.js 20.x ou superior
+- npm ou yarn
+- Git
+- Editor de código (VS Code recomendado)
+
+INSTALAÇÃO LOCAL
+---------------
+1. Clone o repositório:
+   git clone [URL_DO_REPOSITORIO]
+   cd saberangola
+
+2. Instale as dependências:
+   npm install
+
+3. Configure as variáveis de ambiente:
+   Copie .env.example para .env
+   Configure as seguintes variáveis:
+   
+   VITE_SUPABASE_URL=https://ayludcnqyyznsyzhcytf.supabase.co
+   VITE_SUPABASE_PUBLISHABLE_KEY=[CHAVE_PUBLICA]
+   DATABASE_URL=[URL_BANCO_DESENVOLVIMENTO]
+
+4. Execute o projeto:
+   npm run dev
+
+SCRIPTS DISPONÍVEIS
+------------------
+npm run dev               # Inicia frontend e backend simultaneamente
+npm run dev:frontend      # Inicia apenas o frontend (Vite)
+npm run dev:backend       # Inicia apenas o backend (Express)
+npm run build             # Build de produção
+npm run build:dev         # Build de desenvolvimento
+npm run lint              # Executa ESLint
+npm run preview           # Preview do build
+
+PORTAS UTILIZADAS
+----------------
+Frontend (Vite): 5000
+Backend (Express): 3001 (fallback: 3002)
+TypeScript Language Server: Porta dinâmica
+
+CONFIGURAÇÃO DO VITE
+-------------------
+Host: 0.0.0.0 (permite acesso externo)
+Port: 5000 (fixo)
+HMR: Habilitado na mesma porta
+strictPort: true (falha se porta ocupada)
+allowedHosts: true (aceita qualquer host)
+
+Aliases configurados:
+@/ -> src/
+
+CONFIGURAÇÃO DO BACKEND
+----------------------
+Host: 0.0.0.0
+Port: 3001 (com fallback automático para 3002)
+CORS: Configurado para desenvolvimento e produção
+Request logging: Habilitado
+
+Origins permitidos:
+- http://localhost:5000
+- http://0.0.0.0:5000
+- https://*.replit.dev
+- https://*.replit.co
+
+BANCO DE DADOS
+--------------
+Tipo: PostgreSQL (Supabase)
+ORM: Drizzle
+Configuração: drizzle.config.ts
+
+Para executar migrações:
+npx drizzle-kit generate
+npx drizzle-kit migrate
+
+VARIÁVEIS DE AMBIENTE
+--------------------
+Desenvolvimento (.env):
+VITE_SUPABASE_PROJECT_ID=ayludcnqyyznsyzhcytf
+VITE_SUPABASE_PUBLISHABLE_KEY=[CHAVE_SUPABASE]
+VITE_SUPABASE_URL=https://ayludcnqyyznsyzhcytf.supabase.co
+DATABASE_URL=postgresql://[CREDENTIALS]
+
+Produção:
+NODE_ENV=production
+PORT=3001
+[Mesmas variáveis acima]
+
+CONFIGURAÇÃO DO SUPABASE
+------------------------
+Projeto ID: ayludcnqyyznsyzhcytf
+URL: https://ayludcnqyyznsyzhcytf.supabase.co
+Região: Não especificada
+
+Configurações do cliente:
+- persistSession: true
+- autoRefreshToken: true
+- detectSessionInUrl: false
+- storage: localStorage
+
+FERRAMENTAS DE DESENVOLVIMENTO
+-----------------------------
+ESLint: Configurado com regras React/TypeScript
+TypeScript: Strict mode habilitado
+Prettier: Não configurado (recomendado adicionar)
+Husky: Não configurado (recomendado para pre-commit)
+
+ESTRUTURA DE LOGS
+----------------
+Frontend: Console do navegador
+Backend: Console do servidor com timestamps
+Formato: [TIMESTAMP] METHOD URL
+
+Logs incluem:
+- Requisições HTTP
+- Erros de autenticação
+- Falhas de conexão com banco
+- Estados de inicialização
+
+TROUBLESHOOTING COMUM
+--------------------
+1. Porta 5000 ocupada:
+   - Matar processos: pkill -f "vite"
+   - Usar porta alternativa no vite.config.ts
+
+2. Porta 3001 ocupada:
+   - Servidor automaticamente usa 3002
+   - Verificar processos: ps aux | grep node
+
+3. Erro de conexão Supabase:
+   - Verificar variáveis de ambiente
+   - Confirmar chaves válidas
+   - Testar conectividade
+
+4. Problemas TypeScript:
+   - Limpar cache: rm -rf node_modules/.cache
+   - Reinstalar: rm -rf node_modules && npm install
+
+MONITORAMENTO
+------------
+Health Check: GET http://localhost:3001/health
+API Test: GET http://localhost:3001/api/test
+Frontend: http://localhost:5000
+
+Status esperado:
+- Frontend: Vite ready message
+- Backend: SaberAngola Server Iniciado!
+- Banco: Conectado via Supabase
+
+DEPLOYMENT
+----------
+Build: npm run build
+Output: dist/ (frontend) + server/ (backend)
+Servidor: Serve dist/ como static files
+Porta produção: PORT env var ou 3001
+
+Comando produção:
+NODE_ENV=production node server/index.js

@@ -1,0 +1,161 @@
+SABERANGOLA - DOCUMENTAÇÃO TÉCNICA: ARQUITETURA DO SISTEMA
+================================================================
+
+Data de Criação: 04/09/2025
+Última Atualização: 04/09/2025
+Versão: 1.0
+
+VISÃO GERAL
+-----------
+SaberAngola é uma plataforma acadêmica desenvolvida para democratizar o acesso ao conhecimento em Angola. O sistema utiliza uma arquitetura moderna baseada em React/TypeScript no frontend e Node.js/Express no backend.
+
+ARQUITETURA FRONTEND
+-------------------
+Framework: React 18 com TypeScript
+- Roteamento: React Router DOM v6
+- Gerenciamento de Estado: TanStack Query (React Query)
+- UI Framework: Tailwind CSS + shadcn/ui
+- Animações: Framer Motion
+- Build Tool: Vite 5.4.19
+- Servidor de Desenvolvimento: Porta 5000
+
+Estrutura de Pastas:
+src/
+├── components/          # Componentes reutilizáveis
+│   ├── ui/             # Componentes base do shadcn/ui
+│   ├── layout/         # Componentes de layout (Header, Sidebar)
+│   ├── groups/         # Componentes relacionados a grupos de estudo
+│   └── follow/         # Componentes de sistema de seguir
+├── pages/              # Páginas da aplicação
+├── hooks/              # Hooks customizados (useAuth, etc.)
+├── integrations/       # Integrações externas (Supabase)
+├── lib/                # Utilitários e configurações
+└── assets/             # Recursos estáticos
+
+ARQUITETURA BACKEND
+------------------
+Framework: Node.js com Express 5.1.0
+- Runtime: tsx para execução TypeScript
+- Porta: 3001 (com fallback para 3002)
+- CORS: Configurado para desenvolvimento e produção
+- Middleware: Express.json, express.urlencoded
+
+Estrutura:
+server/
+└── index.ts           # Servidor principal
+
+Endpoints Principais:
+- GET /health          # Health check
+- GET /api/test        # Teste da API
+- GET /api/auth/me     # Mock de autenticação
+
+BANCO DE DADOS
+--------------
+Provedor: Supabase PostgreSQL
+URL: https://ayludcnqyyznsyzhcytf.supabase.co
+ORM: Drizzle ORM (configurado)
+
+Tabelas Principais:
+- users                # Usuários do sistema
+- profiles            # Perfis de usuário
+- study_groups        # Grupos de estudo
+- group_members       # Membros dos grupos
+- books               # Biblioteca de livros
+- documents           # Documentos gerados
+- follows             # Sistema de seguir
+- notifications       # Notificações
+
+AUTENTICAÇÃO
+-----------
+Provedor: Supabase Auth
+- Estratégia: Email/Password
+- Sessões: Persistentes com localStorage
+- Auto-refresh: Habilitado
+- Hook personalizado: useAuth
+
+TECNOLOGIAS E DEPENDÊNCIAS
+-------------------------
+Frontend:
+- React 18.3.1
+- TypeScript 5.8.3
+- Vite 5.4.19
+- Tailwind CSS 3.4.17
+- React Router DOM 6.30.1
+- TanStack Query 5.83.0
+- Framer Motion 12.23.12
+- Radix UI (conjunto completo)
+- Lucide React 0.462.0
+
+Backend:
+- Node.js 20.19.3
+- Express 5.1.0
+- tsx 4.20.5
+- cors 2.8.5
+- dotenv 17.2.2
+
+Banco de Dados:
+- Supabase JS 2.56.1
+- Drizzle ORM 0.44.5
+- Drizzle Kit 0.31.4
+
+CONFIGURAÇÕES DE DESENVOLVIMENTO
+-------------------------------
+Vite Config:
+- Host: 0.0.0.0:5000
+- HMR habilitado
+- strictPort: true
+- allowedHosts: true
+
+Environment Variables:
+- VITE_SUPABASE_URL
+- VITE_SUPABASE_PUBLISHABLE_KEY
+- DATABASE_URL
+
+ESTRUTURA DE ROTAS
+-----------------
+Frontend Routes:
+- / (Index/Landing)
+- /auth (Login/Registro)
+- /dashboard (Dashboard principal)
+- /groups (Lista de grupos)
+- /groups/:id (Detalhes do grupo)
+- /create-group (Criar grupo)
+- /library (Biblioteca)
+- /documents (Documentos)
+- /chat (Chat)
+- /institutions (Instituições)
+- /follow (Sistema de seguir)
+
+PRÓXIMAS ATUALIZAÇÕES PLANEJADAS
+-------------------------------
+1. Implementação completa do schema do banco
+2. Sistema de chat em tempo real
+3. Upload de arquivos/documentos
+4. Sistema de notificações push
+5. Implementação de busca avançada
+6. Sistema de recomendações
+7. Analytics e métricas de uso
+8. Implementação de testes automatizados
+
+PROBLEMAS CONHECIDOS
+-------------------
+1. Schema Supabase incompleto (tabelas group_meetings, meeting_attendees)
+2. Rejeições de promessas não tratadas (em investigação)
+3. Warnings do React Router (futuros flags v7)
+4. Alguns tipos TypeScript inconsistentes
+
+OBSERVAÇÕES DE PERFORMANCE
+-------------------------
+- Bundle splitting por rota implementado
+- Lazy loading de componentes
+- Query caching via TanStack Query
+- Otimização de imagens necessária
+- Service Worker não implementado
+
+SEGURANÇA
+---------
+- CORS configurado apropriadamente
+- Sanitização de dados de entrada
+- Autenticação baseada em JWT (Supabase)
+- Headers de segurança básicos
+- Rate limiting não implementado (futuro)
