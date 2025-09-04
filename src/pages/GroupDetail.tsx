@@ -17,6 +17,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { GroupMeetings } from "@/components/groups/GroupMeetings";
 
 interface GroupDetail {
   id: string;
@@ -97,7 +98,7 @@ export default function GroupDetail() {
   const [loading, setLoading] = useState(true);
   const [isMember, setIsMember] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'chat' | 'books' | 'posts' | 'members'>('chat');
+  const [activeTab, setActiveTab] = useState<'chat' | 'books' | 'posts' | 'members' | 'meetings'>('chat');
 
   useEffect(() => {
     if (id && user) {
@@ -592,7 +593,7 @@ export default function GroupDetail() {
               <CardContent className="p-0">
                 <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="w-full">
                   <div className="px-6 pt-6">
-                    <TabsList className="grid w-full grid-cols-4">
+                    <TabsList className="grid w-full grid-cols-5">
                       <TabsTrigger value="chat" className="flex items-center gap-2">
                         <MessageCircle className="h-4 w-4" />
                         Chat
@@ -604,6 +605,10 @@ export default function GroupDetail() {
                       <TabsTrigger value="posts" className="flex items-center gap-2">
                         <FileText className="h-4 w-4" />
                         Posts ({groupPosts.length})
+                      </TabsTrigger>
+                      <TabsTrigger value="meetings" className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        Reuniões
                       </TabsTrigger>
                       <TabsTrigger value="members" className="flex items-center gap-2">
                         <Users className="h-4 w-4" />
@@ -794,6 +799,14 @@ export default function GroupDetail() {
                     </div>
                   </TabsContent>
 
+                  <TabsContent value="meetings" className="px-6 pb-6">
+                    <GroupMeetings 
+                      groupId={group.id}
+                      userRole={userRole}
+                      isMember={isMember}
+                    />
+                  </TabsContent>
+
                   <TabsContent value="members" className="px-6 pb-6">
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold">Membros do Grupo</h3>
@@ -907,9 +920,13 @@ export default function GroupDetail() {
                       <BookOpen className="h-4 w-4 mr-2" />
                       Ver Documentos
                     </Button>
-                    <Button variant="outline" className="w-full justify-start">
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start"
+                      onClick={() => setActiveTab('meetings')}
+                    >
                       <Calendar className="h-4 w-4 mr-2" />
-                      Agendar Reunião
+                      Ver Reuniões
                     </Button>
                     {userRole === 'admin' && (
                       <Button variant="outline" className="w-full justify-start">
